@@ -3,14 +3,15 @@ import Link from 'next/link';
 const componentLinks = [
   ['/creating-component', '1. Creating a Component'],
   ['/using-components', '2. Using Components (Props)'],
-  ['/fragments', '3. Fragments'],
+  ['/nested-components', '3. Sibling Components'],
+  ['/fragments', '4. Fragments'],
 ];
 
 const jsxEventsLinks = [
-  ['/jsx-syntax', '4. JSX Syntax Rules'],
-  ['/conditional-rendering', '5. Conditional Rendering'],
-  ['/rendering-lists', '6. Rendering Lists (map + key)'],
-  ['/events', '7. Event Handling'],
+  ['/jsx-syntax', '5. JSX Syntax Rules'],
+  ['/conditional-rendering', '6. Conditional Rendering'],
+  ['/rendering-lists', '7. Rendering Lists (map + key)'],
+  ['/events', '8. Event Handling'],
 ];
 
 const hookLinks = [

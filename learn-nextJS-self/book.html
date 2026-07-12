@@ -80,6 +80,7 @@
 |   |-- globals.css
 |   |-- creating-component/page.jsx
 |   |-- using-components/page.jsx
+|   |-- nested-components/page.jsx
 |   |-- fragments/page.jsx
 |   |-- jsx-syntax/page.jsx
 |   |-- conditional-rendering/page.jsx
@@ -106,7 +107,7 @@
 |-- next.config.js
 `-- package.json</code></pre>
 
-  <h3>1.4 Install and Run</h3>
+  <h3>1.4 Minimal Installation and First Run</h3>
   <p>
     The app needs only Next.js, React, and React DOM. Build it manually first so students understand
     what each file does instead of treating the setup as magic.
@@ -143,30 +144,35 @@ cd demo-project</code></pre>
     <code>@/components/PageHeader</code>.
   </p>
   <demo-source data-files="jsconfig.json"></demo-source>
-  <h4>Step 7 - Run the project</h4>
+  <h4>Step 7 - Create the App Router files</h4>
+  <p>
+    Next.js needs an <code>app/</code> folder with a root <code>layout.jsx</code> and at least one
+    <code>page.jsx</code>. Create <code>layout.jsx</code> and <code>globals.css</code> in their final
+    project form now. The home page can simply show <code>Welcome to NextJS</code>; section 1.5
+    replaces only <code>app/page.jsx</code> with the lesson navigation.
+  </p>
+  <pre><code>mkdir app</code></pre>
+  <demo-source data-files="app/layout.jsx"></demo-source>
+  <pre><code>// app/page.jsx
+export default function HomePage() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Welcome to NextJS&lt;/h1&gt;
+      &lt;p&gt;Your minimal Next.js app is running.&lt;/p&gt;
+    &lt;/main&gt;
+  );
+}</code></pre>
+  <demo-source data-files="app/globals.css"></demo-source>
+  <h4>Step 8 - Run the project</h4>
   <pre><code>npm run dev
 
 # Open http://localhost:3000</code></pre>
 
-  <h3>1.5 Root Layout and Global CSS</h3>
-  <p>
-    <code>layout.jsx</code> wraps every route. <code>globals.css</code> defines the shared page,
-    button, card, table, and code styles used by all lessons.
-  </p>
-  <demo-source data-files="app/layout.jsx,app/globals.css"></demo-source>
-
-  <h3>1.6 Home Page Navigation</h3>
+  <h3>1.5 Home Page Navigation</h3>
   <p>
     The home page is the index of lessons. Each link points to a route under <code>app/</code>.
   </p>
   <demo-source data-files="app/page.jsx"></demo-source>
-
-  <h3>1.7 Shared Lesson Header</h3>
-  <p>
-    Each lesson page uses the same header component so navigation, title, and description stay
-    consistent.
-  </p>
-  <demo-source data-files="components/PageHeader.jsx"></demo-source>
 
   <h2>Chapter 2 - React JSX Syntax and Events</h2>
   <p>
@@ -180,14 +186,15 @@ cd demo-project</code></pre>
     Build a reusable component in <code>components/WelcomeCard.jsx</code>, then render it from the
     route file. The function name starts with a capital letter and returns JSX.
   </p>
-  <demo-source data-files="components/WelcomeCard.jsx,app/creating-component/page.jsx"></demo-source>
+  <demo-source data-files="components/WelcomeCard.jsx"></demo-source>
+  <demo-source data-files="app/creating-component/page.jsx"></demo-source>
 
-  <h3>2.2 Using Components with Props</h3>
+  <h3>2.2 Shared Lesson Header</h3>
   <p>
-    Props are read-only values passed from a parent component to a child component. This lesson
-    passes different values into the same <code>ProfileBadge</code> component.
+    Each lesson page uses the same header component so navigation, title, and description stay
+    consistent.
   </p>
-  <demo-source data-files="components/ProfileBadge.jsx,app/using-components/page.jsx"></demo-source>
+  <demo-source data-files="components/PageHeader.jsx"></demo-source>
 
   <h3>2.3 Fragments</h3>
   <p>
@@ -196,28 +203,36 @@ cd demo-project</code></pre>
   </p>
   <demo-source data-files="app/fragments/page.jsx"></demo-source>
 
-  <h3>2.4 JSX Syntax Rules</h3>
+  <h3>2.4 Sibling Components</h3>
+  <p>
+    A page can compose multiple child components inside one parent Fragment. In this example,
+    <code>PageHeader</code> and both <code>WelcomeCard</code> instances are sibling children nested
+    inside <code>CreatingComponentPage</code>.
+  </p>
+  <demo-source data-files="app/nested-components/page.jsx"></demo-source>
+
+  <h3>2.5 JSX Syntax Rules</h3>
   <p>
     JSX looks like HTML, but it is JavaScript. Use <code>className</code>, close every tag, use
     braces for JavaScript expressions, and return one root element.
   </p>
   <demo-source data-files="app/jsx-syntax/page.jsx"></demo-source>
 
-  <h3>2.5 Conditional Rendering</h3>
+  <h3>2.6 Conditional Rendering</h3>
   <p>
     JSX does not allow <code>if/else</code> directly inside markup. Use <code>&amp;&amp;</code> for
     optional UI, a ternary for exactly two choices, and <code>null</code> to render nothing.
   </p>
   <demo-source data-files="app/conditional-rendering/page.jsx"></demo-source>
 
-  <h3>2.6 Rendering Lists</h3>
+  <h3>2.7 Rendering Lists</h3>
   <p>
     Use <code>map()</code> to turn an array into JSX. Give every repeated element a stable
     <code>key</code> so React can track changes correctly.
   </p>
   <demo-source data-files="app/rendering-lists/page.jsx"></demo-source>
 
-  <h3>2.7 Event Handling</h3>
+  <h3>2.8 Event Handling</h3>
   <p>
     Event handlers are functions passed to JSX props such as <code>onClick</code>,
     <code>onChange</code>, and <code>onSubmit</code>. Form submit handlers usually call
@@ -412,33 +427,41 @@ cd demo-project</code></pre>
   <h3>7.1 Step 1 - Create the App</h3>
   <ol>
     <li>Create <code>demo-project</code>.</li>
+    <li>Run <code>npm init -y</code>.</li>
     <li>Install <code>next</code>, <code>react</code>, and <code>react-dom</code>.</li>
     <li>Add <code>package.json</code>, <code>next.config.js</code>, and <code>jsconfig.json</code>.</li>
   </ol>
 
-  <h3>7.2 Step 2 - Add the Shared Shell</h3>
+  <h3>7.2 Step 2 - Prove the Minimal App Runs</h3>
   <ol>
     <li>Create <code>app/layout.jsx</code>.</li>
     <li>Create <code>app/globals.css</code>.</li>
-    <li>Create <code>components/PageHeader.jsx</code>.</li>
-    <li>Create <code>app/page.jsx</code> with links to each lesson route.</li>
+    <li>Create <code>app/page.jsx</code> with <code>Welcome to NextJS</code>.</li>
+    <li>Run <code>npm run dev</code> and confirm the welcome page appears.</li>
   </ol>
 
-  <h3>7.3 Step 3 - Add JSX and Events Lessons</h3>
+  <h3>7.3 Step 3 - Replace the Welcome Page with Lesson Navigation</h3>
+  <ol>
+    <li>Create <code>components/PageHeader.jsx</code>.</li>
+    <li>Update <code>app/page.jsx</code> with links to each lesson route.</li>
+    <li>Use the shared lesson styles already added to <code>app/globals.css</code>.</li>
+  </ol>
+
+  <h3>7.4 Step 4 - Add JSX and Events Lessons</h3>
   <ol>
     <li>Create <code>WelcomeCard</code> and <code>ProfileBadge</code>.</li>
     <li>Add pages for components, props, fragments, JSX syntax, conditional rendering, lists, and events.</li>
     <li>Run the app and click each route from the home page.</li>
   </ol>
 
-  <h3>7.4 Step 4 - Add Hooks Lessons</h3>
+  <h3>7.5 Step 5 - Add Hooks Lessons</h3>
   <ol>
     <li>Add one route per hook under <code>app/hooks/</code>.</li>
     <li>Use <code>'use client'</code> on interactive hook examples.</li>
     <li>Test router navigation and dynamic params separately.</li>
   </ol>
 
-  <h3>7.5 Step 5 - Keep the Project Honest</h3>
+  <h3>7.6 Step 6 - Keep the Project Honest</h3>
   <p>
     When a lesson page changes, update the actual <code>demo-project</code> file first. The ebook
     snippets should point to that file, so students see the same code they are asked to build.
