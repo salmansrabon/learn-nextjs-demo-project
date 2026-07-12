@@ -1,0 +1,124 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  color: #1a1a1a;
+}
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px; }
+
+a { color: #1d4ed8; }
+
+.back-link { display: inline-block; margin-bottom: 10px; font-size: 14px; text-decoration: none; }
+
+h1 { font-size: 1.4rem; margin: 0 0 6px; }
+p.description { color: #555; font-size: 14px; margin: 0 0 16px; }
+
+.demo { border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin: 12px 0; }
+
+button {
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 4px 6px 4px 0;
+  font-size: 14px;
+}
+
+input, select {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  padding: 6px 8px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+label { font-size: 13px; font-weight: 600; display: block; margin-top: 6px; }
+
+.badge {
+  display: inline-block;
+  background: #eef2ff;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.note { font-size: 13px; color: #666; }
+
+nav.home-nav ul { list-style: none; padding: 0; margin: 0; }
+nav.home-nav li { margin: 6px 0; }
+nav.home-nav h2 { font-size: 1.05rem; margin: 20px 0 6px; }
+
+/* Theory: the explanation block that precedes every demo — the actual
+   guidance, shown live on the page instead of only in the book. */
+.theory {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.theory h3 { margin: 14px 0 6px; font-size: 1rem; }
+.theory h3:first-child { margin-top: 0; }
+.theory p { margin: 6px 0; }
+.theory ul, .theory ol { margin: 6px 0; padding-left: 20px; }
+.theory li { margin: 3px 0; }
+.theory table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; background: #fff; }
+.theory th, .theory td { border: 1px solid #c7d2fe; padding: 5px 8px; text-align: left; vertical-align: top; }
+.theory code { background: rgba(0, 0, 0, 0.06); padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+
+/* CodePanel: shows the real, live source of a file — read straight off disk
+   via readSource(), so the book and the running project can never drift. */
+.live-preview {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+.live-preview-title {
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 15px;
+  letter-spacing: 0;
+  padding: 6px 12px;
+  margin: 0;
+  font-weight: 700;
+}
+.live-preview-body {
+  padding: 14px;
+}
+.live-preview-body > .demo:first-child { margin-top: 0; }
+.live-preview-body > .demo:last-child { margin-bottom: 0; }
+
+.code-panel { background: #1e1e1e; border-radius: 6px; overflow: hidden; margin: 14px 0; }
+.code-panel-label {
+  background: #2d2d2d;
+  color: #ccc;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  font-family: Consolas, monospace;
+}
+.code-block {
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+  max-height: 60vh;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #d4d4d4;
+  background: transparent;
+}
+.code-block code { font-family: Consolas, monospace; white-space: pre; }

@@ -1,0 +1,8 @@
+demo-project/.next
+demo-project/node_modules
+demo-project/.env
+learn-nextjs/.next
+learn-nextjs-self/node_modules
+learn-nextjs-self/.env
+learn-nextjs-self/.vercel
+learn-nextjs-self/.playwright-mcp
