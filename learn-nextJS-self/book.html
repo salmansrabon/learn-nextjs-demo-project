@@ -108,13 +108,45 @@
 
   <h3>1.4 Install and Run</h3>
   <p>
-    The app needs only Next.js, React, and React DOM. The config files are intentionally minimal so
-    students can see what a clean Next.js setup looks like.
+    The app needs only Next.js, React, and React DOM. Build it manually first so students understand
+    what each file does instead of treating the setup as magic.
   </p>
-  <demo-source data-files="package.json,next.config.js,jsconfig.json"></demo-source>
-  <pre><code>cd demo-project
-npm install
-npm run dev</code></pre>
+  <h4>Step 1 - Create the project folder</h4>
+  <pre><code>mkdir demo-project
+cd demo-project</code></pre>
+  <h4>Step 2 - Create package.json</h4>
+  <p>
+    Use <code>npm init -y</code>. This creates the first <code>package.json</code> with default
+    values.
+  </p>
+  <pre><code>npm init -y</code></pre>
+  <h4>Step 3 - Install Next.js and React</h4>
+  <p>
+    Next.js runs on top of React, so install all three required packages.
+  </p>
+  <pre><code>npm install next react react-dom</code></pre>
+  <h4>Step 4 - Add scripts to package.json</h4>
+  <p>
+    The important scripts are <code>dev</code>, <code>build</code>, and <code>start</code>. After
+    editing, the real project manifest looks like this:
+  </p>
+  <demo-source data-files="package.json"></demo-source>
+  <h4>Step 5 - Create next.config.js</h4>
+  <p>
+    This file is the Next.js configuration file. It can stay empty for this project, but keeping it
+    teaches students where Next.js options go later.
+  </p>
+  <demo-source data-files="next.config.js"></demo-source>
+  <h4>Step 6 - Create jsconfig.json</h4>
+  <p>
+    This file enables the <code>@/</code> import alias used by project files such as
+    <code>@/components/PageHeader</code>.
+  </p>
+  <demo-source data-files="jsconfig.json"></demo-source>
+  <h4>Step 7 - Run the project</h4>
+  <pre><code>npm run dev
+
+# Open http://localhost:3000</code></pre>
 
   <h3>1.5 Root Layout and Global CSS</h3>
   <p>
