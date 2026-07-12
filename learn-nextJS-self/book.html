@@ -1,2465 +1,447 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Next.js Essentials – Concise Guide for Freshers</title>
-  <style>
-    body { font-family: Georgia, "Segoe UI", serif; max-width: 820px; margin: 0 auto; padding: 24px; line-height: 1.7; }
-    h1 { border-bottom: 2px solid #000; padding-bottom: 8px; }
-    h2 { border-bottom: 1px solid #999; padding-bottom: 4px; margin-top: 48px; }
-    h3 { margin-top: 28px; }
-    h4 { margin-top: 20px; margin-bottom: 4px; font-size: 1rem; }
-    pre { border: 1px solid #ccc; padding: 12px 16px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
-    code { font-family: Consolas, monospace; font-size: 0.92em; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px; }
-    th, td { border: 1px solid #999; padding: 6px 10px; text-align: left; vertical-align: top; }
-    ul, ol { padding-left: 24px; }
-    .note { border-left: 3px solid #666; padding-left: 12px; font-size: 14px; }
-    .warn { border-left: 3px solid #b91c1c; padding-left: 12px; font-size: 14px; }
-    .toc ul { list-style: none; padding-left: 12px; font-size: 14px; }
-    .toc > ul > li { margin-bottom: 6px; }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Learn Next.js with demo-project</title>
 </head>
 <body>
-
-<h1>Frontend Development with Next.js — Concise Edition</h1>
-<p>A minimal guide for freshers, built around <strong>two real, buildable projects</strong>:</p>
-<ol>
-  <li>A tiny <strong>practice playground</strong> (Chapter 1.6 onward) — one page per JSX/Events topic and per hook, so every concept works in isolation before it's combined with anything else.</li>
-  <li>The real <strong>User Management App</strong> in <code>frontend/</code> — every later example is taken directly from its source files. It talks to a backend API on <code>http://localhost:5000</code>.</li>
-</ol>
-<p class="note"><strong>How to use:</strong> build the playground first — create each file exactly as shown under "Build it," run <code>npm run dev</code>, and click through the page before reading on. Once every concept in Chapters 2–3 makes sense in isolation, move to Chapter 7 and build the real project, where the same concepts combine into working features. Keep the backend running on port 5000 for that part, watch the Network tab, and practice saying the interview answers out loud.</p>
-
-<!-- ============ TOC ============ -->
-<div class="toc">
-  <h3>Contents</h3>
-  <ul>
-    <li><strong>Chapter 1 — Frontend Project Overview:</strong> React &amp; Next.js overview · History of Next.js · Why Next.js is popular · Installation (two ways) · Main features we build · Setting up the practice playground</li>
-    <li><strong>Chapter 2 — React JSX Syntax &amp; Events:</strong> What is a component · Creating a component · Using components · Fragments · JSX syntax rules · Conditional rendering · Rendering lists · Event handling · Styling · Other CSS frameworks — topics 2.2–2.8 each include a buildable playground page</li>
-    <li><strong>Chapter 3 — Lifecycle &amp; Hooks:</strong> What is a hook · Hooks overview · useState · Dependencies · Mounting / Updating / Unmounting · Lifecycle in the project · useRouter · useParams · useRef · useCallback · useMemo · useContext · useReducer — every hook includes a buildable playground page</li>
-    <li><strong>Chapter 4 — Next.js Essentials:</strong> Rendering strategies · 'use client' · Server vs Client Components · Rendering in this project · next/link · next/image · middleware.js · loading.jsx &amp; error.jsx · not-found.jsx</li>
-    <li><strong>Chapter 5 — Advanced React Concepts:</strong> Re-render behaviour · Prop drilling · Context API · Controlled vs uncontrolled · React.memo · Error Boundaries</li>
-    <li><strong>Chapter 6 — Interview Essentials:</strong> Quick Q&amp;A</li>
-    <li><strong>Chapter 7 — Frontend Implementation:</strong> Step 0 structure &amp; routing · Step 1 init &amp; config · Step 2 root layout · Step 3 validation · Step 4 API services · Step 5 reusable components · Step 6 pages · Step 7 run</li>
-    <li><strong>Chapter 8 — Verification &amp; Interview Prep:</strong> E2E checklist · Key concepts summary · Project pitch · Viva questions · Production improvements</li>
-  </ul>
-</div>
-
-<!-- ============ CHAPTER 1 ============ -->
-<h2>Chapter 1 — Frontend Project Overview</h2>
-
-<p>We build the <strong>frontend</strong> of a User Management Mini App. The backend is the kitchen (processes data, talks to the database), the frontend is the dining area (forms, buttons, tables), and the API is the waiter between them.</p>
-
-<h3>1.1 React &amp; Next.js Overview</h3>
-<p><strong>React</strong> is a JavaScript library (by Meta, 2013) for building UIs from reusable components. Its key idea is the <strong>Virtual DOM</strong>: you update state, React calculates the smallest DOM change and applies it. React handles only rendering and state — routing and structure are up to you.</p>
-<p><strong>Next.js</strong> is a React framework (by Vercel, 2016) that fills those gaps: file-based routing, server-side rendering, and production optimisation. This project uses the <strong>App Router</strong> (Next.js 13+), where every folder inside <code>app/</code> becomes a URL route.</p>
-<table>
-  <thead><tr><th>Topic</th><th>React (plain)</th><th>Next.js</th></tr></thead>
-  <tbody>
-    <tr><td>Type</td><td>UI library</td><td>Full framework on top of React</td></tr>
-    <tr><td>Routing</td><td>Manual (React Router)</td><td>Built-in, file-based (folders = routes)</td></tr>
-    <tr><td>Rendering</td><td>Client-side only (CSR)</td><td>CSR + SSR + SSG + ISR, chosen per page</td></tr>
-    <tr><td>SEO</td><td>Poor — empty HTML until JS loads</td><td>Excellent — HTML ready before render</td></tr>
-    <tr><td>Performance</td><td>Depends on your setup</td><td>Automatic code splitting, image optimisation, prefetching</td></tr>
-    <tr><td>API routes</td><td>Not included</td><td>Built-in backend endpoints in the same project</td></tr>
-  </tbody>
-</table>
-
-<h3>1.2 History of Next.js (short)</h3>
-<table>
-  <thead><tr><th>Year</th><th>Milestone</th></tr></thead>
-  <tbody>
-    <tr><td>2013</td><td>React released by Facebook — components, Virtual DOM, JSX</td></tr>
-    <tr><td>2016</td><td>Next.js 1.0 by Vercel — SSR for React, file-based routing, zero config</td></tr>
-    <tr><td>2020</td><td>Next.js 9.3/10 — Static Site Generation, Image component</td></tr>
-    <tr><td>2022–23</td><td>Next.js 13 — <strong>App Router</strong> (<code>app/</code> directory, Server Components, <code>layout.jsx</code>); stable in 13.4 — the current standard</td></tr>
-    <tr><td>2024+</td><td>Next.js 14/15 — Server Actions, Turbopack, improved caching. <strong>This project uses Next.js 14.0.4.</strong></td></tr>
-  </tbody>
-</table>
-<p class="note">Older tutorials use the <code>pages/</code> directory — the concepts are similar, but file structure and some APIs differ from the App Router used here.</p>
-
-<h3>1.3 Why Next.js is Popular</h3>
-<ul>
-  <li><strong>Performance by default</strong> — code splitting, lazy loading, image optimisation built in.</li>
-  <li><strong>SEO-friendly</strong> — server renders HTML before the browser, so search engines index content.</li>
-  <li><strong>Zero-config routing</strong> — create a file in <code>app/</code>, it becomes a URL.</li>
-  <li><strong>Flexible rendering</strong> — choose SSR, SSG, or CSR per page.</li>
-  <li><strong>Full-stack in one project</strong> — built-in API routes; easy deployment (Vercel or any Node host).</li>
-  <li><strong>Industry adoption</strong> — Netflix, TikTok, Twitch, Notion, and thousands of startups.</li>
-</ul>
-
-<h3>1.4 Installation — Two Ways</h3>
-<p><strong>Method 1 — Boilerplate</strong> (quick start): scaffolds a full project with optional TypeScript/Tailwind/ESLint.</p>
-<pre><code>npx create-next-app@latest my-app     # choose "App Router → Yes"
-cd my-app
-npm run dev                            # http://localhost:3000</code></pre>
-<p><strong>Method 2 — Manual setup</strong> (how <code>frontend/</code> was created): only what you need, no noise.</p>
-<pre><code>mkdir frontend &amp;&amp; cd frontend
-npm init -y
-npm install next react react-dom axios bootstrap
-npm run dev                            # http://localhost:3000</code></pre>
-<pre><code>// frontend/package.json — the project's actual manifest
-{
-  "name": "user-management-frontend",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "axios": "^1.6.0",
-    "bootstrap": "^5.3.2",
-    "next": "14.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  }
-}</code></pre>
-
-<h3>1.5 Main Features We Build</h3>
-<p>Register page · Login page · Profile page with photo upload · Admin user list with search + pagination · User details · User edit · Delete user · Role-based routing · JWT token handling · Reusable components · API service layer with Axios · Form validation · Loading/success/error states.</p>
-
-<h3>1.6 Setting Up the Practice Playground</h3>
-<p>Before touching the real project, build a second, much smaller Next.js app whose only job is to demonstrate one concept per page — one JSX/Events topic or one hook per file. It can live in the very same folder as this book; Next.js only looks inside <code>app/</code> for routes, so a few static <code>.html</code> files alongside it cause no conflict.</p>
-
-<h4>Step 0 — How App Router Routing Actually Works</h4>
-<p>Everything else in this section only makes sense once one rule clicks: <strong>inside the <code>app/</code> folder, folders are URLs, and a file named exactly <code>page.jsx</code> is what makes a folder actually render something.</strong> A folder with no <code>page.jsx</code> inside it is not a route — Next.js just ignores it (or uses it for plain helper files, as you'll see with <code>ThemeContext.jsx</code> below). And if the <code>app/</code> folder doesn't exist at all, or contains no <code>page.jsx</code> anywhere, <code>next dev</code> fails immediately with <em>"Couldn't find any pages or app directory"</em> — there is nothing for it to serve.</p>
-<p>Here is the <strong>entire</strong> file tree you'll build across this chapter and the next two, annotated with the URL each <code>page.jsx</code> produces:</p>
-<pre><code>nextjs-learning-playground/
-├── app/
-│   ├── layout.jsx                          ← required — wraps every page below
-│   ├── globals.css                         ← one small stylesheet, imported once in layout.jsx
-│   ├── page.jsx                            → /            (home page)
-│   ├── creating-component/page.jsx         → /creating-component
-│   ├── using-components/page.jsx           → /using-components
-│   ├── fragments/page.jsx                  → /fragments
-│   ├── jsx-syntax/page.jsx                 → /jsx-syntax
-│   ├── conditional-rendering/page.jsx      → /conditional-rendering
-│   ├── rendering-lists/page.jsx            → /rendering-lists
-│   ├── events/page.jsx                     → /events
-│   └── hooks/
-│       ├── use-state/page.jsx              → /hooks/use-state
-│       ├── use-effect/page.jsx             → /hooks/use-effect
-│       ├── use-router/page.jsx             → /hooks/use-router
-│       │   └── destination/page.jsx        → /hooks/use-router/destination
-│       ├── use-params/page.jsx             → /hooks/use-params
-│       │   └── [id]/page.jsx               → /hooks/use-params/5   (dynamic segment — matches ANY value)
-│       ├── use-ref/page.jsx                → /hooks/use-ref
-│       ├── use-callback/page.jsx           → /hooks/use-callback
-│       ├── use-memo/page.jsx               → /hooks/use-memo
-│       ├── use-context/ThemeContext.jsx    ← plain helper file, NOT a route (no page.jsx here)
-│       ├── use-context/page.jsx            → /hooks/use-context
-│       └── use-reducer/page.jsx            → /hooks/use-reducer
-├── components/          PageHeader.jsx, WelcomeCard.jsx, ProfileBadge.jsx — plain files, not routes
-├── jsconfig.json
-├── next.config.js
-└── package.json</code></pre>
-<p class="note">Three things worth noticing in that tree: (1) <code>[id]</code> in square brackets is a <strong>dynamic segment</strong> — one file matches <code>/hooks/use-params/5</code>, <code>/42</code>, <code>/100</code>, anything; (2) <code>use-context/ThemeContext.jsx</code> sits right next to <code>page.jsx</code> inside the same folder but produces no route of its own, because it isn't named <code>page.jsx</code> — folders only become URLs when a <code>page.jsx</code> is present; (3) <code>components/</code> lives <strong>outside</strong> <code>app/</code> entirely, so nothing in it is ever treated as a route no matter what it's named — more on that in Step 4.</p>
-<p>You'll create this tree gradually: the shell (<code>layout.jsx</code>, <code>globals.css</code>, the shared components, the home page) in this section, then one lesson folder per topic as you reach it in Chapters 2 and 3.</p>
-
-<h4>Step 1 — Initialize the Project</h4>
-<pre><code>mkdir nextjs-learning-playground &amp;&amp; cd nextjs-learning-playground
-# (or run these commands directly in the folder that already has this book)
-npm init -y
-npm install next react react-dom
-npm run dev                            # http://localhost:3000 — will show the "no app directory" error until Step 3</code></pre>
-<p class="note">Use a patched Next.js version — <code>next@14.0.4</code> (the version pinned in <code>frontend/</code>) has a known security advisory. <code>^14.2.25</code> is the same major version — everything you learn transfers directly — with the fix applied.</p>
-<pre><code>// package.json
-{
-  "name": "nextjs-learning-playground",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "dependencies": {
-    "next": "^14.2.25",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  }
-}</code></pre>
-<p class="note"><code>npm init -y</code> creates this <code>package.json</code> with defaults; <code>npm install next react react-dom</code> adds the three dependencies above and fills in <code>node_modules/</code>. <code>npm run dev</code> just runs the <code>"dev"</code> script — <code>next dev</code> — which is the actual command that starts the local server.</p>
-
-<h4>Step 2 — Configuration Files</h4>
-<p><code>next.config.js</code> is how Next.js itself is configured — image domains, redirects, experimental flags, and so on. This project needs none of that, so the file exists (Next.js expects to find it) but stays empty:</p>
-<pre><code>// next.config.js — empty, same as the real project
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-module.exports = nextConfig;</code></pre>
-<p><code>jsconfig.json</code> is unrelated to Next.js routing — it's a plain editor/compiler hint that lets you write <code>import PageHeader from '@/components/PageHeader'</code> instead of counting <code>../../../</code> back up to the project root. <code>"@/*": ["*"]</code> means "<code>@/</code> maps to the project root," so <code>@/components/PageHeader</code> resolves to <code>components/PageHeader.jsx</code> and <code>@/lib/x</code> would resolve to <code>lib/x.js</code>, no matter how deeply nested the file doing the importing is (e.g. <code>app/hooks/use-params/[id]/page.jsx</code>):</p>
-<pre><code>// jsconfig.json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "@/*": ["*"] }
-  }
-}</code></pre>
-
-<h4>Step 3 — Global Styles &amp; Root Layout</h4>
-<p><code>app/layout.jsx</code> is one of the two files Next.js treats specially inside <code>app/</code> (the other is <code>page.jsx</code>). Every page you build below is automatically rendered <em>inside</em> this layout's <code>{children}</code> — it's the one place global CSS is allowed to be imported, and the one place to put markup that should appear on literally every page (here, just the <code>&lt;html&gt;</code>/<code>&lt;body&gt;</code> shell and a centered container div).</p>
-<pre><code>/* app/globals.css — the entire file. Deliberately small: a few resets, one
-   demo container, and just enough styling for buttons/inputs/badges to be
-   readable. No theme system, no CSS framework — that's the point. */
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
-  color: #1a1a1a;
-}
-
-.container { max-width: 720px; margin: 0 auto; padding: 24px; }
-
-a { color: #1d4ed8; }
-
-.back-link { display: inline-block; margin-bottom: 10px; font-size: 14px; text-decoration: none; }
-
-h1 { font-size: 1.4rem; margin: 0 0 6px; }
-p.description { color: #555; font-size: 14px; margin: 0 0 16px; }
-
-.demo { border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin: 12px 0; }
-
-button {
-  background: #1d4ed8;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin: 4px 6px 4px 0;
-  font-size: 14px;
-}
-
-input, select {
-  display: block;
-  width: 100%;
-  max-width: 280px;
-  padding: 6px 8px;
-  margin: 6px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-label { font-size: 13px; font-weight: 600; display: block; margin-top: 6px; }
-
-.badge {
-  display: inline-block;
-  background: #eef2ff;
-  color: #1d4ed8;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 13px;
-  margin-right: 6px;
-}
-
-.note { font-size: 13px; color: #666; }
-
-nav.home-nav ul { list-style: none; padding: 0; margin: 0; }
-nav.home-nav li { margin: 6px 0; }
-nav.home-nav h2 { font-size: 1.05rem; margin: 20px 0 6px; }</code></pre>
-<pre><code>// app/layout.jsx — Server Component, wraps every example page
-import './globals.css';
-
-export const metadata = {
-  title: 'Learn React & Next.js From Scratch',
-  description: 'A live Next.js project that teaches itself — install, then build every JSX/Events topic and every hook, one real page at a time.',
-};
-
-export default function RootLayout({ children }) {
-  return (
-    &lt;html lang="en"&gt;
-      &lt;body&gt;
-        &lt;div className="container"&gt;{children}&lt;/div&gt;
-      &lt;/body&gt;
-    &lt;/html&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it now:</strong> <code>npm run dev</code> no longer errors — Next.js has an <code>app/</code> folder with both required files (<code>layout.jsx</code> exists, though there's no <code>page.jsx</code> for <code>/</code> yet, so visiting <code>localhost:3000</code> shows a 404 rather than the "no app directory" crash). That 404 is expected until Step 5.</p>
-
-<h4>Step 4 — Shared Components (the <code>components/</code> folder)</h4>
-<p><code>components/</code> has <strong>zero special meaning to Next.js</strong> — unlike <code>app/</code>, nothing here becomes a route no matter what you name the files or how you nest them. It's just a folder of ordinary React components that you <code>import</code> by hand wherever you need them, using the <code>@/components/...</code> alias from Step 2. Convention, not magic — you could call this folder <code>ui/</code> or <code>shared/</code> and nothing would break.</p>
-<p>Build the one component every lesson page below will import — a small header with a "back to home" link:</p>
-<pre><code>// components/PageHeader.jsx — shared header used by every example page below
-import Link from 'next/link';
-
-export default function PageHeader({ title, description }) {
-  return (
-    &lt;div&gt;
-      &lt;Link href="/" className="back-link"&gt;← All examples&lt;/Link&gt;
-      &lt;h1&gt;{title}&lt;/h1&gt;
-      {description &amp;&amp; &lt;p className="description"&gt;{description}&lt;/p&gt;}
-    &lt;/div&gt;
-  );
-}</code></pre>
-<p class="note">Notice this component has no CSS of its own — it just uses the global <code>.back-link</code> / <code>h1</code> / <code>p.description</code> rules from Step 3's <code>globals.css</code>. That's deliberate: one small stylesheet, no per-component styling to maintain. <code>WelcomeCard.jsx</code> and <code>ProfileBadge.jsx</code> — the other two files in <code>components/</code> from the Step 0 tree — aren't needed yet; you'll create each one at the exact lesson that first uses it (2.2 and 2.3).</p>
-
-<p>Two more shared files, needed by every lesson from here on — and by the home page itself in Step 5:</p>
-<pre><code>// components/Theory.jsx — the explanation box every lesson page renders,
-// so the guidance lives on the live page, not only in this book
-export default function Theory({ children }) {
-  return &lt;div className="theory"&gt;{children}&lt;/div&gt;;
-}</code></pre>
-<pre><code>// lib/readSource.js — reads a file straight off disk at render time, so the
-// code panel below always shows the real, currently-saved source
-import fs from 'fs';
-import path from 'path';
-
-export function readSource(...relativePaths) {
-  return relativePaths
-    .map((rel) =&gt; {
-      const contents = fs.readFileSync(path.join(process.cwd(), rel), 'utf-8').trimEnd();
-      return `// ${rel}\n${contents}`;
-    })
-    .join('\n\n');
-}</code></pre>
-<pre><code>// components/CodePanel.jsx — renders the string readSource() returns
-export default function CodePanel({ label = 'Source', code }) {
-  return (
-    &lt;div className="code-panel"&gt;
-      &lt;div className="code-panel-label"&gt;{label}&lt;/div&gt;
-      &lt;pre className="code-block"&gt;&lt;code&gt;{code}&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Important:</strong> <code>readSource()</code> uses Node's <code>fs</code> module, which only exists on the server. Never import it from a file that starts with <code>'use client'</code> — the build will fail with <em>"Module not found: Can't resolve 'fs'"</em>. That's why every lesson below splits into two files: a plain <code>page.jsx</code> (a Server Component — no <code>'use client'</code> — free to call <code>readSource()</code>, renders <code>PageHeader</code> + <code>Theory</code> + <code>&lt;Demo /&gt;</code> + <code>CodePanel</code>) and a <code>Demo.jsx</code> (the thing being demonstrated). For interactive lessons, this split is <em>required</em> — <code>Demo.jsx</code> is marked <code>'use client'</code>. For non-interactive lessons, the split is done anyway, for a second reason: the code panel should show only "how this is created and used," never the <code>PageHeader</code>/<code>Theory</code>/<code>CodePanel</code> wrapper around it — reading <code>page.jsx</code> itself would show the panel's own wiring, which is noise. So <code>readSource()</code> is always pointed at <code>Demo.jsx</code> (plus any component file it imports), never at <code>page.jsx</code>.</p>
-
-<h4>Step 5 — The Home Page</h4>
-<p>A <code>page.jsx</code> placed directly inside <code>app/</code> (not inside any subfolder) is the route for <code>/</code> itself. This one needs no interactivity, so it stays a Server Component and can call <code>readSource()</code> directly — it renders the React/Next.js introduction, shows this project's own setup files live, then lists a link to every lesson you're about to build:</p>
-<pre><code>// app/page.jsx — home page
-import Link from 'next/link';
-import CodePanel from '@/components/CodePanel';
-import { readSource } from '@/lib/readSource';
-
-const componentLinks = [
-  ['/creating-component', '1. Creating a Component'],
-  ['/using-components', '2. Using Components (Props)'],
-  ['/fragments', '3. Fragments'],
-];
-
-const jsxEventsLinks = [
-  ['/jsx-syntax', '4. JSX Syntax Rules'],
-  ['/conditional-rendering', '5. Conditional Rendering'],
-  ['/rendering-lists', '6. Rendering Lists (map + key)'],
-  ['/events', '7. Event Handling'],
-];
-
-const hookLinks = [
-  ['/hooks/use-state', '1. useState'],
-  ['/hooks/use-effect', '2. useEffect'],
-  ['/hooks/use-router', '3. useRouter'],
-  ['/hooks/use-params', '4. useParams'],
-  ['/hooks/use-ref', '5. useRef'],
-  ['/hooks/use-callback', '6. useCallback'],
-  ['/hooks/use-memo', '7. useMemo'],
-  ['/hooks/use-context', '8. useContext'],
-  ['/hooks/use-reducer', '9. useReducer'],
-];
-
-export default function HomePage() {
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;Learn React &amp; Next.js From Scratch&lt;/h1&gt;
-      &lt;p className="description"&gt;
-        Everything below is the real setup of the project you are looking at right now.
-      &lt;/p&gt;
-
-      &lt;div className="theory"&gt;
-        &lt;h3&gt;What is React?&lt;/h3&gt;
-        &lt;p&gt;React is a JavaScript library (Meta, 2013) for building UIs from reusable
-        components, using a Virtual DOM to apply only the smallest necessary change.&lt;/p&gt;
-        &lt;h3&gt;What is Next.js?&lt;/h3&gt;
-        &lt;p&gt;Next.js is a React framework (Vercel, 2016) adding file-based routing, SSR, and
-        production optimisation — every folder inside &lt;code&gt;app/&lt;/code&gt; becomes a URL.&lt;/p&gt;
-        &lt;h3&gt;Why Next.js is popular&lt;/h3&gt;
-        &lt;ul&gt;
-          &lt;li&gt;Performance by default — code splitting, lazy loading, image optimisation&lt;/li&gt;
-          &lt;li&gt;SEO-friendly — HTML is ready before the browser gets involved&lt;/li&gt;
-          &lt;li&gt;Zero-config routing — a file in &lt;code&gt;app/&lt;/code&gt; is a URL&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-
-      {/* This project's own real files, read live from disk — see Step 4's warning
-          about why this page has no 'use client' at the top */}
-      &lt;CodePanel label="package.json" code={readSource('package.json')} /&gt;
-      &lt;CodePanel label="app/layout.jsx" code={readSource('app/layout.jsx')} /&gt;
-      &lt;CodePanel label="components/PageHeader.jsx" code={readSource('components/PageHeader.jsx')} /&gt;
-
-      &lt;nav className="home-nav"&gt;
-        &lt;h2&gt;Components&lt;/h2&gt;
-        &lt;ul&gt;
-          {componentLinks.map(([href, label]) =&gt; (
-            &lt;li key={href}&gt;&lt;Link href={href}&gt;{label}&lt;/Link&gt;&lt;/li&gt;
-          ))}
-        &lt;/ul&gt;
-
-        &lt;h2&gt;JSX &amp; Events&lt;/h2&gt;
-        &lt;ul&gt;
-          {jsxEventsLinks.map(([href, label]) =&gt; (
-            &lt;li key={href}&gt;&lt;Link href={href}&gt;{label}&lt;/Link&gt;&lt;/li&gt;
-          ))}
-        &lt;/ul&gt;
-
-        &lt;h2&gt;Hooks&lt;/h2&gt;
-        &lt;ul&gt;
-          {hookLinks.map(([href, label]) =&gt; (
-            &lt;li key={href}&gt;&lt;Link href={href}&gt;{label}&lt;/Link&gt;&lt;/li&gt;
-          ))}
-        &lt;/ul&gt;
-      &lt;/nav&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<p class="note">The full home page (in the real project) also shows <code>next.config.js</code>, <code>jsconfig.json</code>, and <code>components/Theory.jsx</code> the same way — trimmed here for space. These links won't resolve to anything yet — you'll create each target page as you reach its topic in Chapters 2 and 3 below. Notice the routes are flat (<code>/fragments</code>, not <code>/jsx-events/fragments</code>) — every lesson folder lives directly under <code>app/</code>.</p>
-
-<h4>Step 6 — Run It</h4>
-<pre><code>npm run dev        # http://localhost:3000</code></pre>
-<p>You should now see the home page from Step 5, with three link groups (Components, JSX &amp; Events, Hooks). Every link 404s — that's correct, nothing under those folders exists yet. Each time you finish a lesson below, its link on this home page starts working immediately, because <code>next dev</code> picks up new <code>page.jsx</code> files without a restart. Click <strong>"1. Creating a Component"</strong> to begin Chapter 2.</p>
-
-<!-- ============ CHAPTER 2 ============ -->
-<h2>Chapter 2 — React JSX Syntax &amp; Events</h2>
-
-<h3>2.1 What is a React Component?</h3>
-<p>A component is a JavaScript function that returns JSX — a reusable, self-contained piece of UI, like a custom HTML tag. In the real project <code>Navbar</code>, <code>Loading</code>, <code>ErrorMessage</code>, <code>UserTable</code>, <code>UserForm</code>, and every page are components. Two rules:</p>
-<ol>
-  <li>The function name must start with a <strong>capital letter</strong> (lowercase is reserved for HTML tags).</li>
-  <li>It must return <strong>exactly one root element</strong>.</li>
-</ol>
-<p class="note">No dedicated playground page for this definition alone — you'll write your first real one in 2.2 below.</p>
-
-<h3>2.2 Creating a Component — 4 Steps</h3>
-<ol>
-  <li>Create a file named after the component: <code>components/ErrorMessage.jsx</code></li>
-  <li>Write a function starting with a capital letter (it can receive <code>props</code>)</li>
-  <li>Return JSX (one root element)</li>
-  <li>Export it with <code>export default</code></li>
-</ol>
-
-<p><strong>Build it — playground:</strong> <code>components/WelcomeCard.jsx</code> + <code>app/creating-component/page.jsx</code></p>
-<pre><code>// components/WelcomeCard.jsx
-// Step 1: file created, named after the component
-// Step 2: function name starts with a capital letter
-export default function WelcomeCard({ name, role }) {
-  // Step 3: return JSX — exactly one root element
-  return (
-    &lt;div className="demo"&gt;
-      &lt;h3&gt;Welcome, {name}!&lt;/h3&gt;
-      &lt;p&gt;Role: {role}&lt;/p&gt;
-    &lt;/div&gt;
-  );
-}
-// Step 4: exported above with `export default` — that's the whole component</code></pre>
-<pre><code>// app/creating-component/Demo.jsx — no interactivity, but still split out:
-// CodePanel should show only "how it's created and used," never the
-// PageHeader/Theory/CodePanel wrapper around it
-import WelcomeCard from '@/components/WelcomeCard';
-
-export default function Demo() {
-  return (
-    &lt;&gt;
-      &lt;WelcomeCard name="Alex" role="Admin" /&gt;
-      &lt;WelcomeCard name="Sara" role="User" /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<pre><code>// app/creating-component/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function CreatingComponentPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Creating a Component"
-        description="A component is just a function: capital-letter name, returns one root element, and gets exported."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;h3&gt;What is a React component?&lt;/h3&gt;
-        &lt;p&gt;
-          A component is a JavaScript function that returns JSX — a reusable, self-contained piece
-          of UI, like a custom HTML tag you define yourself. Two rules every component must follow:
-        &lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;The function name must start with a &lt;strong&gt;capital letter&lt;/strong&gt; (lowercase is reserved for built-in HTML tags).&lt;/li&gt;
-          &lt;li&gt;It must return &lt;strong&gt;exactly one root element&lt;/strong&gt; (or a Fragment — see Lesson 3).&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;h3&gt;Creating a component — 4 steps&lt;/h3&gt;
-        &lt;ul&gt;
-          &lt;li&gt;Create a file named after the component: &lt;code&gt;components/WelcomeCard.jsx&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;Write a function starting with a capital letter&lt;/li&gt;
-          &lt;li&gt;Return JSX (one root element)&lt;/li&gt;
-          &lt;li&gt;Export it with &lt;code&gt;export default&lt;/code&gt;&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel
-        label="Source"
-        code={readSource('components/WelcomeCard.jsx', 'app/creating-component/Demo.jsx')}
-      /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> visit <code>/creating-component</code> — the explanation box renders above two <code>WelcomeCard</code> instances, then a dark code panel shows this exact file's real source, read live off disk. Every lesson from here follows this same shape: <code>PageHeader</code>, then <code>Theory</code>, then the live demo, then <code>CodePanel</code>.</p>
-<p class="note"><strong>In the real project:</strong> <code>components/ErrorMessage.jsx</code> follows the exact same 4 steps — capital name, returns <code>null</code> or one <code>&lt;div&gt;</code>, exported by default:</p>
-<pre><code>// components/ErrorMessage.jsx — a real project component, all 4 steps
-export default function ErrorMessage({ message }) {   // Step 2: capital name, props
-  if (!message) return null;
-  return (                                             // Step 3: one root element
-    &lt;div className="alert alert-danger py-2" data-testid="error-message" role="alert"&gt;
-      {message}
-    &lt;/div&gt;
-  );
-}                                                      // Step 4: export default (above)</code></pre>
-
-<h3>2.3 Using Components in JSX</h3>
-<p>Import and use a component like a custom HTML tag; pass data through <strong>props</strong>.</p>
-
-<p><strong>Build it — playground:</strong> <code>components/ProfileBadge.jsx</code> + <code>app/using-components/page.jsx</code></p>
-<pre><code>// components/ProfileBadge.jsx
-// A tiny presentational component — used here to show importing from a
-// separate file and passing different props.
-export default function ProfileBadge({ name, role }) {
-  return &lt;span className="badge"&gt;{name} · {role}&lt;/span&gt;;
-}</code></pre>
-<pre><code>// app/using-components/page.jsx
-import PageHeader from '@/components/PageHeader';
-import ProfileBadge from '@/components/ProfileBadge';
-
-export default function UsingComponentsPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Using Components in JSX"
-        description="Import a component, then use it like a custom HTML tag. Same component, different props, different output."
-      /&gt;
-      &lt;div className="demo"&gt;
-        &lt;ProfileBadge name="Alex" role="Admin" /&gt;
-        &lt;ProfileBadge name="Sara" role="User" /&gt;
-
-        &lt;div style={{ marginTop: 10 }}&gt;
-          &lt;p&gt;Components can be nested inside other elements:&lt;/p&gt;
-          &lt;ProfileBadge name="Nested" role="Guest" /&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<pre><code>// app/using-components/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import { readSource } from '@/lib/readSource';
-import ProfileBadge from '@/components/ProfileBadge';
-
-export default function UsingComponentsPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Using Components in JSX"
-        description="Import a component, then use it like a custom HTML tag. Same component, different props, different output."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          Once a component is created and exported (Lesson 1), you use it anywhere by{' '}
-          &lt;strong&gt;importing&lt;/strong&gt; it and writing it like a custom HTML tag — self-closing{' '}
-          &lt;code&gt;&amp;lt;ProfileBadge /&amp;gt;&lt;/code&gt; or with children.
-        &lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Concept&lt;/th&gt;&lt;th&gt;Syntax&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;Import&lt;/td&gt;&lt;td&gt;&lt;code&gt;import ProfileBadge from './ProfileBadge'&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Use, no children&lt;/td&gt;&lt;td&gt;&lt;code&gt;&amp;lt;ProfileBadge name="Alex" role="Admin" /&amp;gt;&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Same component, new data&lt;/td&gt;&lt;td&gt;Call it again with different props — the output changes, the code doesn't&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Nest components&lt;/td&gt;&lt;td&gt;Put one component's JSX inside another element or component&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;div className="demo"&gt;
-        &lt;ProfileBadge name="Alex" role="Admin" /&gt;
-        &lt;ProfileBadge name="Sara" role="User" /&gt;
-
-        &lt;div style={{ marginTop: 10 }}&gt;
-          &lt;p&gt;Components can be nested inside other elements:&lt;/p&gt;
-          &lt;ProfileBadge name="Nested" role="Guest" /&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;CodePanel
-        label="Source"
-        code={readSource('components/ProfileBadge.jsx', 'app/using-components/page.jsx')}
-      /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> visit <code>/using-components</code> — the same <code>ProfileBadge</code> renders three different ways from three different prop values.</p>
-<p class="note"><strong>In the real project:</strong> the same pattern at larger scale — <code>&lt;ErrorMessage message={apiError} /&gt;</code> in every page, and <code>&lt;UserForm formData={...} onChange={...} onSubmit={...} loading={saving} submitLabel="Update User" /&gt;</code> passing data <em>and</em> functions as props.</p>
-
-<h3>2.4 Fragments</h3>
-<p>To return siblings without adding an extra <code>&lt;div&gt;</code> to the DOM, wrap them in a <strong>Fragment</strong> <code>&lt;&gt;…&lt;/&gt;</code>.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/fragments/Demo.jsx</code> + <code>app/fragments/page.jsx</code></p>
-<pre><code>// app/fragments/Demo.jsx
-import { Fragment } from 'react';
-
-function UserInfoShort() {
-  return (
-    // Short syntax — most common
-    &lt;&gt;
-      &lt;h3&gt;Alex&lt;/h3&gt;
-      &lt;p&gt;alex@email.com&lt;/p&gt;
-    &lt;/&gt;
-  );
-}
-
-function UserInfoLong() {
-  return (
-    // Long syntax — same result, explicit import
-    &lt;Fragment&gt;
-      &lt;h3&gt;Sara&lt;/h3&gt;
-      &lt;p&gt;sara@email.com&lt;/p&gt;
-    &lt;/Fragment&gt;
-  );
-}
-
-export default function Demo() {
-  return (
-    &lt;div className="demo"&gt;
-      &lt;UserInfoShort /&gt;
-      &lt;hr /&gt;
-      &lt;UserInfoLong /&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/fragments/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function FragmentsPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Fragments"
-        description="Return multiple sibling elements without adding an extra &lt;div&gt; to the DOM."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          Lesson 1 said a component must return &lt;strong&gt;exactly one root element&lt;/strong&gt;. But what
-          if you have two siblings and don't want an extra &lt;code&gt;&amp;lt;div&amp;gt;&lt;/code&gt; cluttering
-          the real DOM? Wrap them in a &lt;strong&gt;Fragment&lt;/strong&gt;.
-        &lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Syntax&lt;/th&gt;&lt;th&gt;When to use&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;&amp;lt;&amp;gt;...&amp;lt;/&amp;gt;&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Short syntax — the one you'll use almost every time&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;&amp;lt;Fragment&amp;gt;...&amp;lt;/Fragment&amp;gt;&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Long syntax — needed only when a &lt;code&gt;key&lt;/code&gt; prop must be attached&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/fragments/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>In the real project:</strong> the same short syntax groups the logged-in links in <code>components/Navbar.jsx</code>, and wraps <code>&lt;Navbar /&gt;&lt;Loading /&gt;</code> together in <code>app/profile/page.jsx</code>'s loading state — <code>if (loading) return &lt;&gt;&lt;Navbar /&gt;&lt;Loading /&gt;&lt;/&gt;;</code></p>
-
-<h3>2.5 JSX Syntax Rules</h3>
-<table>
-  <thead><tr><th>Rule</th><th>HTML</th><th>JSX</th><th>Why</th></tr></thead>
-  <tbody>
-    <tr><td>CSS class</td><td><code>class="btn"</code></td><td><code>className="btn"</code></td><td><code>class</code> is a JS keyword</td></tr>
-    <tr><td>Label for</td><td><code>for="email"</code></td><td><code>htmlFor="email"</code></td><td><code>for</code> is a JS keyword</td></tr>
-    <tr><td>Inline style</td><td><code>style="color:red"</code></td><td><code>style={{ color: "red" }}</code></td><td>style is a JS object</td></tr>
-    <tr><td>Self-closing tags</td><td><code>&lt;input&gt; &lt;br&gt;</code></td><td><code>&lt;input /&gt; &lt;br /&gt;</code></td><td>every tag must close</td></tr>
-    <tr><td>JS expressions</td><td>not supported</td><td><code>{variable}</code> / <code>{fn()}</code></td><td>curly braces embed any JS expression</td></tr>
-    <tr><td>Comments</td><td><code>&lt;!-- --&gt;</code></td><td><code>{/* comment */}</code></td><td>HTML comments are invalid in JSX</td></tr>
-  </tbody>
-</table>
-
-<p><strong>Build it — playground:</strong> <code>app/jsx-syntax/Demo.jsx</code> + <code>app/jsx-syntax/page.jsx</code></p>
-<pre><code>// app/jsx-syntax/Demo.jsx
-export default function Demo() {
-  const name = 'Alex';
-  const isAdmin = true;
-
-  return (
-    &lt;div className="demo"&gt;
-      {/* className, not class */}
-      &lt;h3 style={{ color: 'teal' }}&gt;{name}&lt;/h3&gt;
-      {/* style is a JS object; {name} above is a JS expression */}
-
-      {isAdmin &amp;&amp; &lt;span className="badge"&gt;Admin&lt;/span&gt;}
-
-      {/* htmlFor, not for */}
-      &lt;label htmlFor="email"&gt;Email&lt;/label&gt;
-      {/* every tag must self-close */}
-      &lt;input id="email" type="email" placeholder="you@example.com" /&gt;
-
-      {/* this is a JSX comment — HTML's &lt;!-- --&gt; does not work in JSX */}
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/jsx-syntax/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function JsxSyntaxPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="JSX Syntax Rules"
-        description="JSX looks like HTML but compiles to JavaScript — a few attribute names and rules differ."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;JSX looks like HTML but it's actually JavaScript — a compiler turns it into plain &lt;code&gt;React.createElement()&lt;/code&gt; calls.&lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Rule&lt;/th&gt;&lt;th&gt;HTML&lt;/th&gt;&lt;th&gt;JSX&lt;/th&gt;&lt;th&gt;Why&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;CSS class&lt;/td&gt;&lt;td&gt;&lt;code&gt;class&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;className&lt;/code&gt;&lt;/td&gt;&lt;td&gt;reserved JS keyword&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Label for&lt;/td&gt;&lt;td&gt;&lt;code&gt;for&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;htmlFor&lt;/code&gt;&lt;/td&gt;&lt;td&gt;reserved JS keyword&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Inline style&lt;/td&gt;&lt;td&gt;string&lt;/td&gt;&lt;td&gt;&lt;code&gt;{'{{ color: "red" }}'}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;style is a JS object&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Self-closing&lt;/td&gt;&lt;td&gt;optional&lt;/td&gt;&lt;td&gt;required&lt;/td&gt;&lt;td&gt;every tag must close in JSX&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Comments&lt;/td&gt;&lt;td&gt;&lt;code&gt;&amp;lt;!-- --&amp;gt;&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;{'{/* */}'}&lt;/code&gt;&lt;/td&gt;&lt;td&gt;HTML comments are invalid in JSX&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/jsx-syntax/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>In the real project:</strong> the same rules appear in <code>app/profile/page.jsx</code> — <code>className</code>, a <code>style={{ width: 96, height: 96 }}</code> object, a ternary as a JS expression, and a self-closing <code>&lt;img /&gt;</code>, all in one profile-photo block:</p>
-<pre><code>// app/profile/page.jsx (excerpt)
-&lt;div
-  className="rounded-circle overflow-hidden bg-secondary mb-2"   // className, not class
-  style={{ width: 96, height: 96 }}                              // style as JS object
-&gt;
-  {user.photoUrl ? (                                             // JS expression in {}
-    &lt;img
-      src={`${API_URL}${user.photoUrl}`}                         // template literal in {}
-      alt="Profile"
-      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-    /&gt;                                                           // self-closing tag
-  ) : (
-    &lt;span className="text-white fs-2 fw-bold"&gt;
-      {user.firstname?.[0]?.toUpperCase()}                       // fallback: first letter
-    &lt;/span&gt;
-  )}
-&lt;/div&gt;</code></pre>
-
-<h3>2.6 Conditional Rendering</h3>
-<p>JSX has no <code>if/else</code> directly inside the return — use one of these patterns inside <code>{}</code>.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/conditional-rendering/Demo.jsx</code> + <code>app/conditional-rendering/page.jsx</code> — this lesson is interactive (<code>useState</code>), so it splits per Step 4's rule: the interactive part goes in a <code>'use client'</code> <code>Demo.jsx</code>, and the plain <code>page.jsx</code> (Server Component) renders <code>Theory</code>, <code>&lt;Demo /&gt;</code>, and the live <code>CodePanel</code>.</p>
-<pre><code>// app/conditional-rendering/Demo.jsx
-'use client';
-import { useState } from 'react';
-
-export default function Demo() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [apiError, setApiError] = useState('');
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;button onClick={() =&gt; setIsLoggedIn(!isLoggedIn)}&gt;Toggle Login State&lt;/button&gt;
-      &lt;button onClick={() =&gt; setApiError(apiError ? '' : 'Something went wrong')}&gt;Toggle Error&lt;/button&gt;
-
-      {/* Pattern 1: &amp;&amp; — render only when the condition is true */}
-      {apiError &amp;&amp; &lt;p style={{ color: 'crimson' }}&gt;{apiError}&lt;/p&gt;}
-
-      {/* Pattern 2: ternary — render one of two options */}
-      &lt;p&gt;{isLoggedIn ? 'Welcome back!' : 'Please log in.'}&lt;/p&gt;
-
-      {/* Pattern 3: null, undefined, and false render nothing */}
-      {false &amp;&amp; &lt;p&gt;You will never see this line.&lt;/p&gt;}
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/conditional-rendering/page.jsx — no 'use client' here
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function ConditionalRenderingPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Conditional Rendering"
-        description="Use &amp;&amp; for one case, a ternary for two, and null/false/undefined to render nothing."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;JSX has no &lt;code&gt;if/else&lt;/code&gt; directly inside the return statement — use one of these three patterns inside &lt;code&gt;{'{}'}&lt;/code&gt; instead:&lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Pattern&lt;/th&gt;&lt;th&gt;Use when&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;&amp;&amp;&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Render something, or nothing at all&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Ternary &lt;code&gt;? :&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Render one of exactly two options&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;null&lt;/code&gt;/&lt;code&gt;false&lt;/code&gt;/&lt;code&gt;undefined&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Render nothing at all&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/conditional-rendering/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click each button — the error line and the welcome message toggle independently, and nothing appears for the always-false line.</p>
-<p class="note"><strong>In the real project:</strong> the ternary picks Navbar's logged-in vs logged-out links; <code>&amp;&amp;</code> shows a field error only when it exists (<code>{errors.email &amp;&amp; &lt;div className="invalid-feedback"&gt;{errors.email}&lt;/div&gt;}</code>); <code>return null</code> is how <code>ErrorMessage</code> renders nothing when empty.</p>
-
-<h3>2.7 Rendering Lists with map()</h3>
-<p>Every mapped element needs a unique, stable <code>key</code> — usually the item's id, never the array index.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/rendering-lists/Demo.jsx</code> + <code>app/rendering-lists/page.jsx</code></p>
-<pre><code>// app/rendering-lists/Demo.jsx
-'use client';
-import { useState } from 'react';
-
-let nextId = 4;
-
-export default function Demo() {
-  const [users, setUsers] = useState([
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Carl' },
-  ]);
-
-  const addUser = () =&gt; {
-    setUsers([...users, { id: nextId, name: `User ${nextId}` }]);
-    nextId += 1;
-  };
-
-  const removeUser = (id) =&gt; setUsers(users.filter((u) =&gt; u.id !== id));
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;button onClick={addUser}&gt;Add User&lt;/button&gt;
-      &lt;ul&gt;
-        {users.map((user) =&gt; (
-          &lt;li key={user.id}&gt;
-            {user.name}{' '}
-            &lt;button onClick={() =&gt; removeUser(user.id)}&gt;Remove&lt;/button&gt;
-          &lt;/li&gt;
-        ))}
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/rendering-lists/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function RenderingListsPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="Rendering Lists with map()"
-        description="Every mapped element needs a unique, stable key — the item's id, never the array index."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          To render an array of items, use &lt;code&gt;.map()&lt;/code&gt; to convert each one into JSX. Every
-          mapped element &lt;strong&gt;must have a unique &lt;code&gt;key&lt;/code&gt; prop&lt;/strong&gt; — React uses it
-          to track exactly which item changed, was added, or was removed.
-        &lt;/p&gt;
-        &lt;p&gt;
-          Never use the array index as the key if the list can reorder or shrink — always use a
-          stable, unique id from the data itself.
-        &lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/rendering-lists/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> add a few users, then remove one from the middle — React updates only the removed row because each <code>&lt;li&gt;</code> has a stable <code>key={user.id}</code>.</p>
-<p class="note"><strong>In the real project:</strong> <code>components/UserTable.jsx</code> maps users the same way — <code>key={user.id}</code>, never the index, because rows are deleted and reordered by search.</p>
-
-<h3>2.8 Event Handling</h3>
-<p>Events are camelCase (<code>onClick</code>, <code>onChange</code>...) and take a <strong>function</strong>, not a string. Every handler receives an event object <code>e</code> as its first argument.</p>
-<table>
-  <thead><tr><th>Property / method</th><th>What it gives you</th></tr></thead>
-  <tbody>
-    <tr><td><code>e.target.name</code> / <code>e.target.value</code></td><td>Which field fired, and its current value — one handler for many inputs</td></tr>
-    <tr><td><code>e.preventDefault()</code></td><td>Stops the browser's default behaviour (form-submit page reload)</td></tr>
-    <tr><td><code>e.key</code></td><td>Which key was pressed (<code>"Enter"</code>, <code>"Escape"</code>...)</td></tr>
-    <tr><td><code>e.target.files[0]</code></td><td>The selected file from a <code>&lt;input type="file"&gt;</code></td></tr>
-  </tbody>
-</table>
-
-<p><strong>Build it — playground:</strong> <code>app/events/Demo.jsx</code> + <code>app/events/page.jsx</code></p>
-<pre><code>// app/events/Demo.jsx
-'use client';
-import { useState } from 'react';
-
-export default function Demo() {
-  const [log, setLog] = useState([]);
-  const [lastKey, setLastKey] = useState('');
-  const addLog = (msg) =&gt; setLog((prev) =&gt; [msg, ...prev].slice(0, 6));
-
-  const handleChange = (e) =&gt; {
-    // e.target.name / e.target.value — which field fired, and its current value
-    addLog(`onChange on "${e.target.name}": "${e.target.value}"`);
-  };
-
-  const handleSubmit = (e) =&gt; {
-    e.preventDefault(); // stops the browser's default page reload
-    addLog('onSubmit fired (preventDefault stopped the page reload)');
-  };
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;button onClick={() =&gt; addLog('onClick fired')}&gt;Click me&lt;/button&gt;
-
-      &lt;div
-        style={{ border: '1px dashed #aaa', padding: 10, margin: '8px 0', textAlign: 'center' }}
-        onMouseEnter={() =&gt; addLog('onMouseEnter fired')}
-        onMouseLeave={() =&gt; addLog('onMouseLeave fired')}
-      &gt;
-        Hover over me
-      &lt;/div&gt;
-
-      &lt;form onSubmit={handleSubmit}&gt;
-        &lt;input name="name" placeholder="Name" onChange={handleChange} /&gt;
-        &lt;input
-          placeholder="Press a key..."
-          onKeyDown={(e) =&gt; setLastKey(e.key)}
-        /&gt;
-        &lt;button type="submit"&gt;Submit form&lt;/button&gt;
-      &lt;/form&gt;
-      &lt;p className="note"&gt;Last key pressed: {lastKey || '—'}&lt;/p&gt;
-
-      &lt;h4&gt;Event log:&lt;/h4&gt;
-      &lt;ul&gt;{log.map((entry, i) =&gt; &lt;li key={i}&gt;{entry}&lt;/li&gt;)}&lt;/ul&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/events/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function EventsPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="React Event Handling"
-        description="Events are camelCase (onClick, onChange...) and take a function, not a string. Every handler receives an event object 'e'."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          React events are written in &lt;strong&gt;camelCase&lt;/strong&gt; (&lt;code&gt;onClick&lt;/code&gt;, not{' '}
-          &lt;code&gt;onclick&lt;/code&gt;) and receive a &lt;strong&gt;function&lt;/strong&gt; as their value, not a string.
-        &lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Property / method&lt;/th&gt;&lt;th&gt;What it gives you&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;e.target.name&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The &lt;code&gt;name&lt;/code&gt; attribute of the element that fired the event&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;e.target.value&lt;/code&gt;&lt;/td&gt;&lt;td&gt;The input's current value&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;e.preventDefault()&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Stops the browser's default behaviour&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;e.key&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Which keyboard key was pressed&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/events/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click the button, hover the box, type in the inputs, and submit the form — each fires a different event you can watch in the on-screen log.</p>
-<p class="note"><strong>In the real project:</strong> <code>onClick={() =&gt; onDelete(user.id)}</code> (inline arrow, passes an argument) in <code>UserTable.jsx</code>; <code>onSubmit={handleSearch}</code> + <code>onChange={(e) =&gt; setSearch(e.target.value)}</code> in the admin search form; the exact same <code>const { name, value } = e.target</code> pattern is in every real page's <code>handleChange</code>, and <code>e.preventDefault()</code> is the first line of every <code>handleSubmit</code> — without it, clicking Register or Login would reload the page and lose all form state.</p>
-
-<h3>2.9 Styling — Bootstrap, Custom CSS &amp; Global CSS</h3>
-<p class="note">The playground intentionally skips Bootstrap — it only needed the few rules already shown in 1.6's <code>globals.css</code>. This section covers how the <strong>real project</strong> styles itself instead.</p>
-<table>
-  <thead><tr><th>Approach</th><th>Scope</th><th>In this project</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Bootstrap</strong></td><td>Any element with the class</td><td>All UI: <code>form-control</code>, <code>btn btn-primary</code>, <code>alert</code>, <code>table</code>, <code>navbar</code>, <code>badge</code>, <code>spinner-border</code></td></tr>
-    <tr><td><strong>globals.css</strong></td><td>Every page</td><td>One rule only — the page background</td></tr>
-    <tr><td><strong>Inline style object</strong></td><td>Single element</td><td>Fixed sizes, e.g. photo frame <code>style={{ width: 96, height: 96 }}</code></td></tr>
-  </tbody>
-</table>
-<pre><code>// app/layout.jsx — Bootstrap imported ONCE, applies to every page
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './globals.css';   // global CSS may ONLY be imported in the root layout
-
-/* app/globals.css — the project's entire global stylesheet */
-body {
-  background-color: #f8f9fa;
-}</code></pre>
-
-<h3>2.10 Other Popular CSS Frameworks (awareness)</h3>
-<table>
-  <thead><tr><th>Framework</th><th>Style</th><th>Best for</th></tr></thead>
-  <tbody>
-    <tr><td>Tailwind CSS</td><td>Utility classes (<code>bg-blue-600 px-4</code>)</td><td>Fully custom designs without CSS files</td></tr>
-    <tr><td>Material UI (MUI)</td><td>Ready components (<code>&lt;Button variant="contained"&gt;</code>)</td><td>Google Material Design, enterprise UIs</td></tr>
-    <tr><td>Ant Design</td><td>Ready components</td><td>Data-heavy admin dashboards</td></tr>
-    <tr><td>Chakra UI</td><td>Components with style props</td><td>Accessible, composable UIs</td></tr>
-  </tbody>
-</table>
-<p class="note">The workflow is the same for all: install → import → use className or component. This project uses Bootstrap because it needs no provider or config.</p>
-
-<!-- ============ CHAPTER 3 ============ -->
-<h2>Chapter 3 — Component Lifecycle &amp; Hooks</h2>
-
-<h3>3.1 What is a React Hook?</h3>
-<p>A hook is a built-in function starting with <code>use</code> that gives function components access to state, side effects, performance tools, and routing. Two golden rules: call hooks only at the <strong>top level</strong> of a component (never inside loops/conditions), and only inside React components or custom hooks.</p>
-<p class="note">You'll build one dedicated playground page per hook below, starting with <code>useState</code> in 3.3.</p>
-
-<h3>3.2 Hooks Overview</h3>
-<table>
-  <thead><tr><th>Hook</th><th>Purpose</th><th>Playground file</th><th>Used in the real project</th></tr></thead>
-  <tbody>
-    <tr><td><code>useState</code></td><td>State variable + setter; setter re-renders</td><td><code>app/hooks/use-state/page.jsx</code></td><td>Every page and Navbar</td></tr>
-    <tr><td><code>useEffect</code></td><td>Side effects after render (API, localStorage)</td><td><code>app/hooks/use-effect/page.jsx</code></td><td>Profile, Admin list, Details, Edit, Navbar</td></tr>
-    <tr><td><code>useRouter</code> (Next.js)</td><td>Programmatic navigation</td><td><code>app/hooks/use-router/page.jsx</code></td><td>Every page + Navbar</td></tr>
-    <tr><td><code>useParams</code> (Next.js)</td><td>Read dynamic URL segments</td><td><code>app/hooks/use-params/[id]/page.jsx</code></td><td>Details and Edit pages (<code>[id]</code>)</td></tr>
-    <tr><td><code>useRef</code></td><td>DOM access / mutable value, no re-render</td><td><code>app/hooks/use-ref/page.jsx</code></td><td>Not used — see 3.9</td></tr>
-    <tr><td><code>useCallback</code></td><td>Memoize a function reference</td><td><code>app/hooks/use-callback/page.jsx</code></td><td>Not used — see 3.10</td></tr>
-    <tr><td><code>useMemo</code></td><td>Memoize a computed value</td><td><code>app/hooks/use-memo/page.jsx</code></td><td>Not used — see 3.11</td></tr>
-    <tr><td><code>useContext</code></td><td>Read shared context, no prop drilling</td><td><code>app/hooks/use-context/page.jsx</code></td><td>Not used — see 3.12</td></tr>
-    <tr><td><code>useReducer</code></td><td>Complex related state via reducer</td><td><code>app/hooks/use-reducer/page.jsx</code></td><td>Not used — see 3.13</td></tr>
-  </tbody>
-</table>
-
-<h3>3.3 useState — Managing State</h3>
-<p>The key difference from a plain variable: calling the setter <strong>tells React to re-render</strong>. A plain variable can change all it wants — the screen never finds out. <code>const [value, setValue] = useState(initialValue)</code> is the entire syntax.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-state/Demo.jsx</code> + <code>app/hooks/use-state/page.jsx</code></p>
-<pre><code>// app/hooks/use-state/Demo.jsx
-'use client';
-import { useState } from 'react';
-
-export default function Demo() {
-  const [formData, setFormData] = useState({ name: '', email: '' });
-
-  const handleChange = (e) =&gt; {
-    const { name, value } = e.target;
-    setFormData((prev) =&gt; ({ ...prev, [name]: value }));
-  };
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;input name="name" placeholder="Name" value={formData.name} onChange={handleChange} /&gt;
-      &lt;input name="email" placeholder="Email" value={formData.email} onChange={handleChange} /&gt;
-      &lt;p&gt;Live preview: &lt;strong&gt;{formData.name || '...'}&lt;/strong&gt; — {formData.email || '...'}&lt;/p&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-state/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseStatePage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useState — Managing State"
-        description="const [value, setValue] = useState(initialValue). Calling the setter tells React to re-render."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;h3&gt;What is a React Hook?&lt;/h3&gt;
-        &lt;p&gt;
-          A hook is a built-in function whose name starts with &lt;code&gt;use&lt;/code&gt;. Two golden rules:
-          call hooks only at the &lt;strong&gt;top level&lt;/strong&gt; of a component, and only &lt;strong&gt;inside
-          a component&lt;/strong&gt; or a custom hook.
-        &lt;/p&gt;
-        &lt;h3&gt;useState — the basics&lt;/h3&gt;
-        &lt;p&gt;
-          The key difference from a plain variable: calling the setter &lt;strong&gt;tells React to
-          re-render&lt;/strong&gt;. A plain variable can change all it wants — the screen never finds out.
-        &lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-state/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> type in either field — the "Live preview" line updates on every keystroke.</p>
-<p><strong>In the real project:</strong> the login page uses four state variables, each driving one part of the UI:</p>
-<pre><code>// app/login/page.jsx — real state setup
-const [formData, setFormData] = useState({ email: '', password: '' }); // input values
-const [errors, setErrors]     = useState({});   // per-field validation messages
-const [loading, setLoading]   = useState(false); // disables button, shows spinner
-const [apiError, setApiError] = useState('');   // red banner from the server
-
-// one handler for all inputs — and the error clears while the user retypes
-const handleChange = (e) =&gt; {
-  const { name, value } = e.target;
-  setFormData((prev) =&gt; ({ ...prev, [name]: value }));
-  if (errors[name]) setErrors((prev) =&gt; ({ ...prev, [name]: '' }));
-};</code></pre>
-<p class="note">Same pattern everywhere: Register adds <code>success</code>; Profile has <code>user</code> + <code>uploading</code>; Admin list has <code>users</code>, <code>pagination</code>, <code>search</code>; Edit separates <code>loading</code> (initial fetch) from <code>saving</code> (submit).</p>
-
-<h3>3.4 Dependencies — the <code>[deps]</code> Array</h3>
-<p><code>useEffect</code> (and <code>useCallback</code>/<code>useMemo</code>) take a dependency array as second argument. Listing a value means: <em>"watch this; re-run me when it changes."</em></p>
-<table>
-  <thead><tr><th>Dependency</th><th>Runs</th><th>Real use in the project</th></tr></thead>
-  <tbody>
-    <tr><td><code>[]</code></td><td>Once on mount</td><td><code>ProfilePage</code>: token check + <code>getMe()</code>; <code>AdminUsersPage</code>: role check + <code>fetchUsers(1, '')</code>; <code>Navbar</code>: read user from localStorage</td></tr>
-    <tr><td><code>[id]</code></td><td>Mount + whenever <code>id</code> changes</td><td><code>UserDetailsPage</code> and <code>EditUserPage</code>: re-fetch when the URL id changes</td></tr>
-    <tr><td>no array</td><td>After <em>every</em> render</td><td>Never used — causes infinite loops with setState</td></tr>
-  </tbody>
-</table>
-<p class="note">You'll see every one of these patterns running live in the next section's playground file — <code>app/hooks/use-effect/page.jsx</code>.</p>
-
-<h3>3.5 Lifecycle: Mounting, Updating, Unmounting</h3>
-<p>Every component goes through three phases, all handled through <code>useEffect</code>.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-effect/Demo.jsx</code> + <code>app/hooks/use-effect/page.jsx</code></p>
-<pre><code>// app/hooks/use-effect/Demo.jsx
-'use client';
-import { useEffect, useState } from 'react';
-
-function Timer({ onLog }) {
-  const [count, setCount] = useState(0);
-
-  // MOUNTING + UNMOUNTING — empty dependency array runs once, cleanup on unmount
-  useEffect(() =&gt; {
-    onLog('✅ mounted');
-    return () =&gt; onLog('❌ unmounted');
-  }, []);
-
-  // UPDATING — re-runs on mount, then again every time count changes
-  useEffect(() =&gt; {
-    onLog(`🔄 count updated: ${count}`);
-  }, [count]);
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;p&gt;Count: {count}&lt;/p&gt;
-      &lt;button onClick={() =&gt; setCount((c) =&gt; c + 1)}&gt;Increase&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}
-
-export default function Demo() {
-  const [showTimer, setShowTimer] = useState(true);
-  const [log, setLog] = useState([]);
-  const addLog = (msg) =&gt; setLog((prev) =&gt; [msg, ...prev].slice(0, 8));
-
-  return (
-    &lt;&gt;
-      &lt;button onClick={() =&gt; setShowTimer(!showTimer)}&gt;
-        {showTimer ? 'Hide Timer (unmount)' : 'Show Timer (mount)'}
-      &lt;/button&gt;
-      {showTimer &amp;&amp; &lt;Timer onLog={addLog} /&gt;}
-      &lt;h4&gt;Lifecycle log:&lt;/h4&gt;
-      &lt;ul&gt;{log.map((entry, i) =&gt; &lt;li key={i}&gt;{entry}&lt;/li&gt;)}&lt;/ul&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-effect/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseEffectPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useEffect — Dependencies &amp; Lifecycle"
-        description="[] = run once on mount. [count] = mount + every time count changes. The returned function runs on unmount."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;h3&gt;The dependency array&lt;/h3&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Dependency&lt;/th&gt;&lt;th&gt;Runs&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;[]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Once, right after the component first mounts&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;[count]&lt;/code&gt;&lt;/td&gt;&lt;td&gt;On mount, then again every time &lt;code&gt;count&lt;/code&gt; changes&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;no array&lt;/td&gt;&lt;td&gt;After &lt;em&gt;every&lt;/em&gt; render — almost always a bug&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-        &lt;h3&gt;Three lifecycle phases&lt;/h3&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;strong&gt;Mounting&lt;/strong&gt; — first shown. &lt;code&gt;useEffect(fn, [])&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;strong&gt;Updating&lt;/strong&gt; — a watched value changed. &lt;code&gt;useEffect(fn, [value])&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;strong&gt;Unmounting&lt;/strong&gt; — the &lt;strong&gt;function returned&lt;/strong&gt; from the effect is the cleanup.&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-effect/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click "Increase" — watch <code>🔄 count updated: N</code> appear. Click "Hide Timer" — watch <code>❌ unmounted</code> appear. Click "Show Timer" again — a fresh <code>✅ mounted</code> appears with count reset to 0.</p>
-<p class="note"><strong>React 18 Strict Mode:</strong> on first load you'll likely see an extra mount → unmount → mount cycle before you click anything. That's React deliberately double-invoking effects in development to help catch missing cleanup — it only mounts once in production.</p>
-
-<p><strong>In the real project</strong>, the same three phases show up as:</p>
-<p><strong>Mounting</strong> — <code>ProfilePage</code> guards the route and fetches data exactly once:</p>
-<pre><code>// app/profile/page.jsx — the MOUNTING phase
-useEffect(() =&gt; {
-  if (!localStorage.getItem('token')) {   // route guard first
-    router.push('/login');
-    return;
-  }
-  getMe()                                  // then fetch the profile
-    .then((result) =&gt; setUser(result.data))
-    .catch((err) =&gt; setError(err.response?.data?.message || 'Failed to load profile'))
-    .finally(() =&gt; setLoading(false));
-}, []);                                    // [] = run once on mount</code></pre>
-<p><strong>Updating</strong> — <code>UserDetailsPage</code> re-fetches when the URL id changes:</p>
-<pre><code>// app/admin/users/[id]/page.jsx — the UPDATING phase
-const { id } = useParams();
-useEffect(() =&gt; {
-  getUserById(id)
-    .then((result) =&gt; setUser(result.data))
-    .catch((err) =&gt; setError('Failed to load user'))
-    .finally(() =&gt; setLoading(false));
-}, [id]);      // navigating /admin/users/3 → /admin/users/7 re-runs this</code></pre>
-<p><strong>Unmounting</strong> — this project starts no timers or subscriptions, so no cleanup is needed, but if <code>ProfilePage</code> auto-refreshed, it would look like:</p>
-<pre><code>useEffect(() =&gt; {
-  const t = setInterval(fetchProfile, 5000);
-  return () =&gt; clearInterval(t);   // cleanup — prevents a memory leak on navigate-away
-}, []);</code></pre>
-
-<h3>3.6 Lifecycle in Our Project</h3>
-<table>
-  <thead><tr><th>Page</th><th>Phase</th><th>What happens</th></tr></thead>
-  <tbody>
-    <tr><td>ProfilePage</td><td>Mounting</td><td>Check token → redirect if missing → <code>getMe()</code></td></tr>
-    <tr><td>AdminUsersPage</td><td>Mounting</td><td>Check token + admin role → <code>fetchUsers(1, '')</code></td></tr>
-    <tr><td>UserDetails / Edit</td><td>Mounting + Updating</td><td>Fetch user by id; re-fetch on <code>useEffect([id])</code></td></tr>
-    <tr><td>Navbar</td><td>Mounting</td><td>Read <code>user</code> from localStorage (browser-only, safe inside useEffect)</td></tr>
-  </tbody>
-</table>
-
-<h3>3.7 useRouter (Next.js) — Programmatic Navigation</h3>
-<p><code>useRouter</code> gives programmatic navigation — imported from <code>next/navigation</code>, not <code>react</code>.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-router/Demo.jsx</code> + <code>app/hooks/use-router/page.jsx</code> + <code>app/hooks/use-router/destination/page.jsx</code></p>
-<pre><code>// app/hooks/use-router/Demo.jsx
-'use client';
-import { useRouter } from 'next/navigation';
-
-export default function Demo() {
-  const router = useRouter();
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;button onClick={() =&gt; router.push('/hooks/use-router/destination')}&gt;
-        router.push('/destination')
-      &lt;/button&gt;
-      &lt;button onClick={() =&gt; router.replace('/hooks/use-router/destination')}&gt;
-        router.replace('/destination')
-      &lt;/button&gt;
-      &lt;button onClick={() =&gt; router.back()}&gt;router.back()&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-router/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseRouterPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useRouter — Programmatic Navigation"
-        description="Navigate from code instead of a clicked link — used for redirects after login, logout, and route guards."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          &lt;code&gt;useRouter&lt;/code&gt; is a &lt;strong&gt;Next.js&lt;/strong&gt; hook — imported from{' '}
-          &lt;code&gt;'next/navigation'&lt;/code&gt;, not &lt;code&gt;'react'&lt;/code&gt;.
-        &lt;/p&gt;
-        &lt;table&gt;
-          &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Method&lt;/th&gt;&lt;th&gt;Behaviour&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;router.push('/path')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Navigate; adds a new history entry&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;router.replace('/path')&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Navigate, replacing the current entry&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;code&gt;router.back()&lt;/code&gt;&lt;/td&gt;&lt;td&gt;Go to the previous page in history&lt;/td&gt;&lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel
-        label="Source"
-        code={readSource('app/hooks/use-router/Demo.jsx', 'app/hooks/use-router/destination/page.jsx')}
-      /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-router/destination/page.jsx — the target of the buttons above
-import Link from 'next/link';
-import PageHeader from '@/components/PageHeader';
-
-export default function DestinationPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="You arrived via useRouter!"
-        description="This page was reached by router.push or router.replace — not a clicked &lt;a&gt; tag."
-      /&gt;
-      &lt;Link href="/hooks/use-router"&gt;← Back to useRouter example&lt;/Link&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click each button in turn — <code>push</code> and <code>replace</code> both navigate to the destination page; <code>back()</code> returns to the previous page in history.</p>
-<p class="note"><strong>In the real project:</strong> <code>router.push('/admin/users')</code> or <code>router.push('/profile')</code> after login (role-based redirect); a two-level route guard at the top of <code>AdminUsersPage</code> that calls <code>router.push('/login')</code> or <code>router.push('/profile')</code> depending on what's missing; and <code>Navbar</code>'s logout button, which clears storage then calls <code>router.push('/login')</code>.</p>
-
-<h3>3.8 useParams (Next.js) — Read the URL</h3>
-<p><code>useParams</code> reads dynamic segments from the current URL — only useful inside a <code>[param]</code> folder.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-params/Demo.jsx</code> + <code>app/hooks/use-params/page.jsx</code> + <code>app/hooks/use-params/[id]/Demo.jsx</code> + <code>app/hooks/use-params/[id]/page.jsx</code></p>
-<pre><code>// app/hooks/use-params/Demo.jsx — the index page's list of sample links
-import Link from 'next/link';
-
-export default function Demo() {
-  return (
-    &lt;div className="demo"&gt;
-      &lt;ul&gt;
-        &lt;li&gt;&lt;Link href="/hooks/use-params/5"&gt;/hooks/use-params/5&lt;/Link&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;Link href="/hooks/use-params/42"&gt;/hooks/use-params/42&lt;/Link&gt;&lt;/li&gt;
-        &lt;li&gt;&lt;Link href="/hooks/use-params/100"&gt;/hooks/use-params/100&lt;/Link&gt;&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-params/page.jsx — index page
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseParamsIndexPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useParams — Read Dynamic URL Segments"
-        description="Click a link below — the same page file reads a different id from the URL each time."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          &lt;code&gt;useParams&lt;/code&gt; reads the &lt;strong&gt;dynamic segments&lt;/strong&gt; from the current URL —
-          only useful inside a route folder wrapped in square brackets, like{' '}
-          &lt;code&gt;app/hooks/use-params/[id]/page.jsx&lt;/code&gt;.
-        &lt;/p&gt;
-        &lt;p&gt;One file, infinite URLs: &lt;code&gt;/5&lt;/code&gt;, &lt;code&gt;/42&lt;/code&gt;, and &lt;code&gt;/100&lt;/code&gt; below all render this same component.&lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel
-        label="Source"
-        code={readSource('app/hooks/use-params/Demo.jsx', 'app/hooks/use-params/[id]/Demo.jsx')}
-      /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-params/[id]/Demo.jsx — the interactive part of the dynamic route
-'use client';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-
-export default function Demo() {
-  const { id } = useParams(); // reads the [id] segment from the URL
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;p&gt;URL param id: &lt;strong&gt;{id}&lt;/strong&gt;&lt;/p&gt;
-      &lt;Link href="/hooks/use-params"&gt;← Back&lt;/Link&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-params/[id]/page.jsx — Server Component; Next.js injects the
-// [id] segment as the `params` prop here, so the title can use it without
-// needing useParams() or 'use client' at this level
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseParamsDetailPage({ params }) {
-  const { id } = params;
-
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title={`useParams — Showing id: ${id}`}
-        description="This same page file renders for /5, /42, and /100 — only the id changes."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          &lt;code&gt;useParams&lt;/code&gt; reads the &lt;strong&gt;dynamic segments&lt;/strong&gt; from the current URL —
-          only useful inside a route folder wrapped in square brackets, like this one.
-        &lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-params/[id]/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click each sample link — the heading and "URL param id" update to match the segment in the URL.</p>
-<p class="note"><strong>In the real project:</strong> <code>app/admin/users/[id]/page.jsx</code> and <code>.../[id]/edit/page.jsx</code> both do <code>const { id } = useParams()</code> then <code>getUserById(id)</code> inside <code>useEffect(..., [id])</code> — navigating from user 3 to user 7 re-fetches automatically.</p>
-
-<h3>3.9 useRef — DOM Access &amp; Silent Values</h3>
-<p>Returns an object with <code>.current</code>; changing it does <strong>not</strong> re-render. Two use cases: reference a DOM element, or persist a mutable value across renders.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-ref/Demo.jsx</code> + <code>app/hooks/use-ref/page.jsx</code></p>
-<pre><code>// app/hooks/use-ref/Demo.jsx
-'use client';
-import { useRef, useEffect, useState } from 'react';
-
-export default function Demo() {
-  const inputRef = useRef(null);
-  const renderCount = useRef(0);
-  const [, forceRerender] = useState(0);
-
-  useEffect(() =&gt; {
-    inputRef.current.focus(); // use case 1: DOM access — auto-focus on mount
-  }, []);
-
-  // use case 2: a mutable value that survives renders without causing one.
-  // Mutated inside an effect (not directly in the render body) to avoid a
-  // server/client hydration mismatch.
-  useEffect(() =&gt; {
-    renderCount.current += 1;
-  });
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;input ref={inputRef} placeholder="Auto-focused on mount" /&gt;
-      &lt;p&gt;This component has rendered {renderCount.current} time(s).&lt;/p&gt;
-      &lt;button onClick={() =&gt; forceRerender((t) =&gt; t + 1)}&gt;Force a re-render&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-ref/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseRefPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useRef — DOM Access &amp; Silent Values"
-        description="Changing ref.current does not re-render the component — unlike useState."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;&lt;code&gt;useRef&lt;/code&gt; returns an object with a single &lt;code&gt;.current&lt;/code&gt; property. Two uses:&lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;strong&gt;Access a DOM element directly&lt;/strong&gt; — e.g. auto-focus an input on mount.&lt;/li&gt;
-          &lt;li&gt;&lt;strong&gt;Store a mutable value&lt;/strong&gt; that survives re-renders &lt;em&gt;without&lt;/em&gt; triggering one.&lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;p&gt;
-          &lt;strong&gt;Common mistake:&lt;/strong&gt; mutating &lt;code&gt;ref.current&lt;/code&gt; directly in the render body
-          (not inside &lt;code&gt;useEffect&lt;/code&gt;) can cause a real Next.js &lt;strong&gt;hydration mismatch&lt;/strong&gt;
-          — see the warning box below.
-        &lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-ref/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<div class="warn">
-<strong>Real bug to avoid:</strong> the first draft of this file wrote <code>renderCount.current += 1;</code> directly in the component body, not inside <code>useEffect</code>. It looked fine, but Next.js pre-renders this Client Component once on the server and once again on the client during hydration — so the ref got incremented on both passes, producing a different number in the server-rendered HTML than in the client's first paint. React then logs a "Text content did not match" console error — a genuine <strong>hydration mismatch</strong>. The fix: only ever mutate a ref inside a <code>useEffect</code> or an event handler, never directly in the render body.
-</div>
-<p class="note"><strong>Run it:</strong> the input auto-focuses on load. Click "Force a re-render" — the count jumps (accounting for React Strict Mode's double mount, it typically starts around 2).</p>
-<p class="note"><strong>In the real project:</strong> <code>useRef</code> isn't used yet — a natural improvement is auto-focusing the login email field on mount, exactly like the playground's <code>inputRef</code>, inside <code>app/login/page.jsx</code>.</p>
-
-<h3>3.10 useCallback — Memoize a Function</h3>
-<p>Keeps the <strong>same function reference</strong> across renders unless dependencies change — prevents a child wrapped in <code>React.memo</code> from re-rendering just because a new (but equivalent) function was passed down.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-callback/Demo.jsx</code> + <code>app/hooks/use-callback/page.jsx</code></p>
-<pre><code>// app/hooks/use-callback/Demo.jsx
-'use client';
-import { useState, useCallback, memo } from 'react';
-
-const Child = memo(function Child({ onIncrement }) {
-  console.log('Child rendered'); // watch the console while typing below
-  return &lt;button onClick={onIncrement}&gt;Increment (child button)&lt;/button&gt;;
-});
-
-export default function Demo() {
-  const [count, setCount] = useState(0);
-  const [text, setText] = useState('');
-
-  // useCallback keeps the SAME function reference across renders (deps: []).
-  // Without it, Child (wrapped in memo) would re-render on every keystroke
-  // below, even though nothing it actually uses has changed.
-  const handleIncrement = useCallback(() =&gt; {
-    setCount((c) =&gt; c + 1);
-  }, []);
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;p&gt;Count: {count}&lt;/p&gt;
-      &lt;Child onIncrement={handleIncrement} /&gt;
-      &lt;input
-        placeholder="Type here — Child should NOT re-render"
-        value={text}
-        onChange={(e) =&gt; setText(e.target.value)}
-      /&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-callback/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseCallbackPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useCallback — Memoize a Function"
-        description="Open the browser console. Typing below will NOT log 'Child rendered' because handleIncrement's reference stays stable."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          Without &lt;code&gt;useCallback&lt;/code&gt;, a component creates a &lt;strong&gt;brand-new function&lt;/strong&gt;{' '}
-          on every render. If passed to a child wrapped in &lt;code&gt;React.memo&lt;/code&gt;, the child
-          re-renders anyway, since it sees a &quot;new&quot; prop every time.
-        &lt;/p&gt;
-        &lt;p&gt;&lt;code&gt;useCallback(fn, [deps])&lt;/code&gt; keeps the &lt;strong&gt;same function reference&lt;/strong&gt; across renders as long as the dependencies haven't changed.&lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-callback/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> open DevTools, type several characters in the text box — the console logs "Child rendered" only twice total (React Strict Mode's double mount), never again while typing.</p>
-<p class="note"><strong>In the real project:</strong> <code>handleDelete</code> in <code>AdminUsersPage</code> is recreated on every render (every search keystroke). Wrapping it in <code>useCallback(fn, [pagination.page, search])</code> and wrapping <code>UserTable</code> in <code>React.memo</code> would give it the same stable-reference behaviour you just saw with <code>Child</code>.</p>
-
-<h3>3.11 useMemo — Memoize a Value</h3>
-<p>Caches an expensive calculation; recomputes only when its dependencies change.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-memo/Demo.jsx</code> + <code>app/hooks/use-memo/page.jsx</code></p>
-<pre><code>// app/hooks/use-memo/Demo.jsx
-'use client';
-import { useState, useMemo } from 'react';
-
-const users = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-  { id: 3, name: 'Carl' },
-  { id: 4, name: 'Diana' },
-];
-
-export default function Demo() {
-  const [search, setSearch] = useState('');
-  const [unrelated, setUnrelated] = useState(0);
-
-  const filteredUsers = useMemo(() =&gt; {
-    console.log('Filtering users...'); // open the console and watch when this logs
-    return users.filter((u) =&gt; u.name.toLowerCase().includes(search.toLowerCase()));
-  }, [search]); // only recomputes when 'search' changes
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;input placeholder="Search users..." value={search} onChange={(e) =&gt; setSearch(e.target.value)} /&gt;
-      &lt;button onClick={() =&gt; setUnrelated((n) =&gt; n + 1)}&gt;Re-render (unrelated state: {unrelated})&lt;/button&gt;
-      &lt;ul&gt;{filteredUsers.map((u) =&gt; &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}&lt;/ul&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-memo/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseMemoPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useMemo — Memoize a Computed Value"
-        description="Open the console. Clicking 'Re-render' will NOT log 'Filtering users...' because 'search' didn't change."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          &lt;code&gt;useMemo&lt;/code&gt; memoizes a &lt;strong&gt;computed value&lt;/strong&gt; instead of a function. Use it
-          for expensive calculations that shouldn't re-run on every render — only when their
-          dependencies change.
-        &lt;/p&gt;
-        &lt;p&gt;&lt;code&gt;useCallback&lt;/code&gt; memoizes a &lt;em&gt;function&lt;/em&gt;; &lt;code&gt;useMemo&lt;/code&gt; memoizes a &lt;em&gt;value&lt;/em&gt;.&lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-memo/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> open DevTools, click "Re-render" several times — no new "Filtering users..." log appears, because <code>search</code> never changed. Type in the search box and it logs immediately.</p>
-<p class="note"><strong>In the real project:</strong> search is done by the backend (<code>search</code> param in the API call), so <code>useMemo</code> isn't needed. If filtering moved to the frontend, wrapping it exactly like the playground above would stop re-filtering on every pagination click.</p>
-<p class="note"><code>useCallback</code> memoizes a <em>function</em>; <code>useMemo</code> memoizes a <em>value</em>.</p>
-
-<h3>3.12 useContext — Consume Shared State</h3>
-<p>React's built-in solution to prop drilling: <strong>create → provide → consume</strong>, without threading data through every intermediate component.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-context/ThemeContext.jsx</code> + <code>app/hooks/use-context/Demo.jsx</code> + <code>app/hooks/use-context/page.jsx</code></p>
-<pre><code>// app/hooks/use-context/ThemeContext.jsx
-'use client';
-import { createContext, useContext, useState } from 'react';
-
-export const ThemeContext = createContext(null);
-
-// STEP 2: Provider — holds the shared state
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('light');
-  const toggleTheme = () =&gt; setTheme((t) =&gt; (t === 'light' ? 'dark' : 'light'));
-  return (
-    &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
-      {children}
-    &lt;/ThemeContext.Provider&gt;
-  );
-}
-
-// Custom hook wrapping useContext — the recommended pattern
-export function useTheme() {
-  return useContext(ThemeContext);
-}</code></pre>
-<pre><code>// app/hooks/use-context/Demo.jsx
-'use client';
-import { ThemeProvider, useTheme } from './ThemeContext';
-
-function ThemedBox() {
-  const { theme, toggleTheme } = useTheme(); // no props needed — reads context directly
-  return (
-    &lt;div className="demo" style={{ background: theme === 'dark' ? '#1a1a1a' : '#fff', color: theme === 'dark' ? '#fff' : '#1a1a1a' }}&gt;
-      &lt;p&gt;Current theme: &lt;strong&gt;{theme}&lt;/strong&gt;&lt;/p&gt;
-      &lt;button onClick={toggleTheme}&gt;Toggle Theme&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}
-
-function DeeplyNestedConsumer() {
-  const { theme } = useTheme();
-  return &lt;p className="note"&gt;A deeply nested child also knows the theme is &quot;{theme}&quot; — no props were passed down.&lt;/p&gt;;
-}
-
-// STEP 1: create — see ThemeContext.jsx above (createContext, Provider, custom hook)
-export default function Demo() {
-  return (
-    // STEP 3: provide — wrap the components that need the value
-    &lt;ThemeProvider&gt;
-      &lt;ThemedBox /&gt;
-      {/* STEP 4: consume — any depth, no props threaded through */}
-      &lt;DeeplyNestedConsumer /&gt;
-    &lt;/ThemeProvider&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-context/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseContextPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useContext — Shared State Without Prop Drilling"
-        description="Wrap components in a Provider once; any descendant can read the value directly."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          Passing data through several component layers that don't use it, just so a deeply-nested
-          child can, is called &lt;strong&gt;prop drilling&lt;/strong&gt;. Context is React's built-in fix.
-        &lt;/p&gt;
-        &lt;ul&gt;
-          &lt;li&gt;&lt;strong&gt;Create&lt;/strong&gt; — &lt;code&gt;const MyContext = createContext(null)&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;strong&gt;Provide&lt;/strong&gt; — wrap components in &lt;code&gt;&amp;lt;MyContext.Provider value={'{...}'}&amp;gt;&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;strong&gt;Consume&lt;/strong&gt; — any descendant calls &lt;code&gt;useContext(MyContext)&lt;/code&gt;, zero props passed manually&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel
-        label="Source"
-        code={readSource('app/hooks/use-context/ThemeContext.jsx', 'app/hooks/use-context/Demo.jsx')}
-      /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click "Toggle Theme" — both the box <em>and</em> the deeply nested paragraph below it update together, even though the theme was never passed to the nested component as a prop.</p>
-<p class="note"><strong>In the real project:</strong> <code>Navbar</code> reads <code>localStorage.getItem('user')</code> directly instead of using context. An <code>AuthContext</code> is the exact same three steps as <code>ThemeContext</code> above — just swap <code>theme</code>/<code>toggleTheme</code> for <code>user</code>/<code>login</code>/<code>logout</code>. The full <code>AuthContext</code> code is in Chapter 5.3.</p>
-
-<h3>3.13 useReducer — Complex Related State</h3>
-<p>An alternative to <code>useState</code> for state that changes together — dispatch an <strong>action</strong>, a <strong>reducer function</strong> decides the new state.</p>
-
-<p><strong>Build it — playground:</strong> <code>app/hooks/use-reducer/Demo.jsx</code> + <code>app/hooks/use-reducer/page.jsx</code></p>
-<pre><code>// app/hooks/use-reducer/Demo.jsx
-'use client';
-import { useReducer } from 'react';
-
-const initialState = { count: 0 };
-
-// A reducer is a pure function: (currentState, action) =&gt; newState
-function counterReducer(state, action) {
-  switch (action.type) {
-    case 'increment': return { count: state.count + 1 };
-    case 'decrement': return { count: state.count - 1 };
-    case 'reset':      return initialState;
-    default: return state;
-  }
-}
-
-export default function Demo() {
-  const [state, dispatch] = useReducer(counterReducer, initialState);
-
-  return (
-    &lt;div className="demo"&gt;
-      &lt;p&gt;Count: {state.count}&lt;/p&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: 'increment' })}&gt;+1&lt;/button&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: 'decrement' })}&gt;-1&lt;/button&gt;
-      &lt;button onClick={() =&gt; dispatch({ type: 'reset' })}&gt;Reset&lt;/button&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<pre><code>// app/hooks/use-reducer/page.jsx
-import PageHeader from '@/components/PageHeader';
-import Theory from '@/components/Theory';
-import CodePanel from '@/components/CodePanel';
-import Demo from './Demo';
-import { readSource } from '@/lib/readSource';
-
-export default function UseReducerPage() {
-  return (
-    &lt;&gt;
-      &lt;PageHeader
-        title="useReducer — Complex State via Actions"
-        description="Instead of calling multiple setState functions, you dispatch an action and a reducer decides the new state."
-      /&gt;
-      &lt;Theory&gt;
-        &lt;p&gt;
-          &lt;code&gt;useReducer&lt;/code&gt; is an alternative to &lt;code&gt;useState&lt;/code&gt; for state that's{' '}
-          &lt;strong&gt;complex or changes together&lt;/strong&gt;. You &lt;code&gt;dispatch&lt;/code&gt; a single{' '}
-          &lt;strong&gt;action&lt;/strong&gt;, and a &lt;strong&gt;reducer&lt;/strong&gt; — &lt;code&gt;(state, action) =&gt; newState&lt;/code&gt; — decides exactly how state changes.
-        &lt;/p&gt;
-        &lt;p&gt;Use &lt;code&gt;useState&lt;/code&gt; for simple, independent values. Reach for &lt;code&gt;useReducer&lt;/code&gt; once you have 3+ related values that must always change together.&lt;/p&gt;
-      &lt;/Theory&gt;
-      &lt;Demo /&gt;
-      &lt;CodePanel label="Source" code={readSource('app/hooks/use-reducer/Demo.jsx')} /&gt;
-    &lt;/&gt;
-  );
-}</code></pre>
-<p class="note"><strong>Run it:</strong> click +1 a few times, then Reset — same result as three <code>useState</code> setters would give, but driven by one <code>dispatch</code> call each time.</p>
-<p class="note"><strong>In the real project (a bigger example):</strong> <code>RegisterPage</code> holds 5 separate <code>useState</code> calls (<code>formData</code>, <code>errors</code>, <code>loading</code>, <code>apiError</code>, <code>success</code>). The same counter pattern above, scaled up, merges them into one state object so loading/error/success can never be set inconsistently:</p>
-<pre><code>function formReducer(state, action) {
-  switch (action.type) {
-    case 'SET_FIELD':      return { ...state, formData: { ...state.formData, [action.name]: action.value } };
-    case 'SUBMIT_START':   return { ...state, loading: true,  apiError: '', success: '' };
-    case 'SUBMIT_SUCCESS': return { ...state, loading: false, success: action.message };
-    case 'SUBMIT_ERROR':   return { ...state, loading: false, apiError: action.message };
-    default: return state;
-  }
-}
-const [state, dispatch] = useReducer(formReducer, initialState);</code></pre>
-
-<!-- ============ CHAPTER 4 ============ -->
-<h2>Chapter 4 — Next.js Essentials</h2>
-
-<h3>4.1 The Four Rendering Strategies</h3>
-<table>
-  <thead><tr><th>Strategy</th><th>When HTML is built</th><th>SEO</th><th>Best for</th></tr></thead>
-  <tbody>
-    <tr><td><strong>CSR</strong> Client-Side</td><td>In browser on each visit</td><td>Poor</td><td>Dashboards, logged-in apps — <strong>this project</strong></td></tr>
-    <tr><td><strong>SSR</strong> Server-Side</td><td>On server per request</td><td>Excellent</td><td>Dynamic public pages (products, profiles)</td></tr>
-    <tr><td><strong>SSG</strong> Static Generation</td><td>Once at build time</td><td>Excellent</td><td>Blogs, docs, marketing pages</td></tr>
-    <tr><td><strong>ISR</strong> Incremental Regeneration</td><td>Build time + background refresh on a timer</td><td>Excellent</td><td>News, e-commerce listings</td></tr>
-  </tbody>
-</table>
-
-<h3>4.2 The <code>'use client'</code> Directive</h3>
-<p>In the App Router, <strong>all components are Server Components by default</strong> — they run only on the server and <em>cannot</em> use <code>useState</code>/<code>useEffect</code>, event handlers, or browser APIs (<code>localStorage</code>, <code>window</code>). Adding <code>'use client'</code> as the <strong>very first line</strong> makes it a Client Component. Compare the project's two kinds of files:</p>
-<pre><code>// app/login/page.jsx — CLIENT component: needs hooks + events + localStorage
-'use client';                                  // must be line 1, before imports
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-...
-
-// app/layout.jsx — SERVER component: no directive, no hooks, just structure
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './globals.css';
-export const metadata = { title: 'User Management Mini App' };  // server-only feature
-export default function RootLayout({ children }) {
-  return &lt;html lang="en"&gt;&lt;body&gt;{children}&lt;/body&gt;&lt;/html&gt;;
-}</code></pre>
-<p class="note"><strong>Hydration:</strong> even Client Components get a pre-rendered HTML shell from the server for fast first paint; React then "hydrates" it in the browser. That is why <code>Navbar</code> reads localStorage <em>inside useEffect</em> — reading it during render would differ between server and browser and cause a hydration mismatch (you saw a concrete example of this exact bug in the playground's useRef section, 3.9).</p>
-
-<h3>4.3 Server vs Client Components</h3>
-<table>
-  <thead><tr><th>Feature</th><th>Server Component</th><th>Client Component</th></tr></thead>
-  <tbody>
-    <tr><td>useState / useEffect / events</td><td>✗</td><td>✓</td></tr>
-    <tr><td>localStorage / window</td><td>✗</td><td>✓</td></tr>
-    <tr><td>Server-only secrets, direct DB access</td><td>✓</td><td>✗</td></tr>
-  </tbody>
-</table>
-<p><strong>Golden rule:</strong> a Server Component <em>can</em> render a Client Component (the project's <code>RootLayout</code> renders every client page via <code>{children}</code>); a Client Component <em>cannot</em> import a Server Component. <strong>Tip:</strong> keep <code>'use client'</code> as deep in the tree as possible — less JavaScript sent to the browser.</p>
-
-<h3>4.4 Rendering in This Project</h3>
-<table>
-  <thead><tr><th>File</th><th>Type</th><th>Why</th></tr></thead>
-  <tbody>
-    <tr><td>All 6 pages (login, register, profile, admin ×3)</td><td>Client (<code>'use client'</code>)</td><td>Form state, <code>useEffect</code> fetches, localStorage token reads</td></tr>
-    <tr><td><code>Navbar</code></td><td>Client</td><td><code>useRouter</code> for logout, localStorage for auth state</td></tr>
-    <tr><td><code>app/layout.jsx</code>, <code>app/page.jsx</code></td><td>Server (default)</td><td>Pure structure / server redirect — no interactivity</td></tr>
-    <tr><td><code>Loading</code>, <code>ErrorMessage</code>, <code>SuccessMessage</code>, <code>UserTable</code>, <code>UserForm</code></td><td>No directive of their own</td><td>Imported by client pages, so they run as part of the client tree</td></tr>
-  </tbody>
-</table>
-<p class="note">SEO doesn't matter for a login-protected app, so CSR everywhere is the right call. A public app (blog, shop) would use SSG/ISR for public pages and CSR only for the dashboard.</p>
-
-<h3>4.5 <code>next/link</code> vs <code>&lt;a&gt;</code></h3>
-<p>Plain <code>&lt;a&gt;</code> triggers a full page reload — React restarts, state is lost. <code>&lt;Link&gt;</code> does client-side navigation and prefetches the target. Every navigation in the project uses it:</p>
-<pre><code>import Link from 'next/link';
-
-// components/Navbar.jsx
-&lt;Link href="/" className="navbar-brand fw-bold"&gt;User Management App&lt;/Link&gt;
-&lt;Link href="/admin/users" className="text-white text-decoration-none small"&gt;Users&lt;/Link&gt;
-
-// components/UserTable.jsx — dynamic routes built from data
-&lt;Link href={`/admin/users/${user.id}`} className="btn btn-sm btn-outline-primary"&gt;View&lt;/Link&gt;
-&lt;Link href={`/admin/users/${user.id}/edit`} className="btn btn-sm btn-outline-warning"&gt;Edit&lt;/Link&gt;
-
-// app/login/page.jsx — cross-links between auth pages
-No account? &lt;Link href="/register"&gt;Register&lt;/Link&gt;
-
-// app/admin/users/[id]/page.jsx — back navigation
-&lt;Link href="/admin/users" className="text-decoration-none"&gt;← Back&lt;/Link&gt;</code></pre>
-<p class="note">The playground uses the same <code>&lt;Link&gt;</code> component throughout — see the home page and the useRouter/useParams examples in 3.7 and 3.8.</p>
-
-<h3>4.6 <code>next/image</code> vs <code>&lt;img&gt;</code></h3>
-<p>This project currently uses a plain <code>&lt;img&gt;</code> for profile photos:</p>
-<pre><code>// app/profile/page.jsx — current code
-&lt;img src={`${API_URL}${user.photoUrl}`} alt="Profile"
-     style={{ width: '100%', height: '100%', objectFit: 'cover' }} /&gt;</code></pre>
-<p><em>Improvement:</em> <code>&lt;Image&gt;</code> adds lazy loading, resizing, WebP conversion, and prevents layout shift — it needs the backend host allowed in <code>next.config.js</code> (currently empty in this project):</p>
-<pre><code>import Image from 'next/image';
-&lt;Image src={`${API_URL}${user.photoUrl}`} alt="Profile" width={96} height={96} /&gt;
-
-// next.config.js
-const nextConfig = {
-  images: { remotePatterns: [{ protocol: 'http', hostname: 'localhost', port: '5000', pathname: '/uploads/**' }] },
-};</code></pre>
-
-<h3>4.7 <code>middleware.js</code> — Centralised Route Protection</h3>
-<p>This project guards routes <em>inside each page's</em> <code>useEffect</code> (see 3.7) — the page renders briefly before redirecting. <code>middleware.js</code> in the project root would run <em>before</em> any page renders and centralise the four repeated guard blocks. Note: middleware runs on the server, so the token must move from localStorage to <strong>cookies</strong>:</p>
-<pre><code>import { NextResponse } from 'next/server';
-export function middleware(request) {
-  const token = request.cookies.get('token')?.value;
-  const { pathname } = request.nextUrl;
-  if ((pathname.startsWith('/admin') || pathname === '/profile') &amp;&amp; !token)
-    return NextResponse.redirect(new URL('/login', request.url));
-  return NextResponse.next();
-}
-export const config = { matcher: ['/admin/:path*', '/profile', '/login', '/register'] };</code></pre>
-
-<h3>4.8 <code>loading.jsx</code> and <code>error.jsx</code> — Special Files</h3>
-<p>This project handles loading manually on every page:</p>
-<pre><code>// app/profile/page.jsx (and every other page) — current manual pattern
-if (loading) return &lt;&gt;&lt;Navbar /&gt;&lt;Loading /&gt;&lt;/&gt;;</code></pre>
-<p><em>Improvement:</em> drop a <code>loading.jsx</code> / <code>error.jsx</code> into any route folder and Next.js shows them automatically (auto Suspense / Error Boundary):</p>
-<pre><code>// app/admin/users/loading.jsx — would replace the manual if-loading check
-export default function Loading() {
-  return &lt;div className="spinner-border text-primary" role="status" /&gt;;
-}
-
-// app/admin/users/error.jsx — must be a Client Component; reset() retries
-'use client';
-export default function Error({ error, reset }) {
-  return (&lt;div&gt;&lt;h2&gt;Something went wrong&lt;/h2&gt;
-    &lt;button onClick={() =&gt; reset()}&gt;Try again&lt;/button&gt;&lt;/div&gt;);
-}</code></pre>
-
-<h3>4.9 <code>not-found.jsx</code> — Custom 404</h3>
-<p>Create <code>app/not-found.jsx</code> to replace the default 404 page. In this project, visiting <code>/admin/users/99999</code> shows an error banner; calling <code>notFound()</code> (from <code>next/navigation</code>) in the catch block of <code>UserDetailsPage</code> would render the custom 404 instead.</p>
-
-<!-- ============ CHAPTER 5 ============ -->
-<h2>Chapter 5 — Advanced React Concepts</h2>
-
-<h3>5.1 Re-render Behaviour</h3>
-<p>React re-renders a component when: its <strong>state</strong> changes, its <strong>props</strong> change, its <strong>parent re-renders</strong> (even with unchanged props), or a <strong>Context value</strong> it consumes changes. In this project: every time <code>loading</code> toggles in <code>LoginPage</code>, the whole page re-renders — including <code>&lt;ErrorMessage /&gt;</code> whose <code>message</code> prop didn't change. Harmless here, but the fix is 5.5.</p>
-
-<h3>5.2 Prop Drilling</h3>
-<p>Passing data through layers that don't use it, just to reach a deep child. This project avoids it two ways: <code>Navbar</code> reads <code>localStorage</code> directly (works, but not idiomatic React — see 5.3), and <code>AdminUsersPage</code> passes props exactly one level down (<code>users</code>, <code>onDelete</code> → <code>UserTable</code>), which is fine and not drilling.</p>
-
-<h3>5.3 Context API</h3>
-<p>React's built-in shared store: <strong>create → provide → consume</strong>. <em>Not used in this project</em> — but you already built and ran this exact three-step pattern in the playground's <code>useContext</code> example (3.12), where <code>ThemeContext.jsx</code> shared a theme value with a deeply nested consumer, no props involved. Here is the <code>AuthContext</code> that would replace the localStorage reads in <code>Navbar</code> and every page guard — same shape, different value:</p>
-<pre><code>import { createContext, useContext, useState } from 'react';
-
-// 1. create
-export const AuthContext = createContext(null);
-
-// 2. provide — mirrors what app/login/page.jsx currently does inline
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const login = (userData, token) =&gt; {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-  };
-  const logout = () =&gt; {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-  };
-  return &lt;AuthContext.Provider value={{ user, login, logout }}&gt;{children}&lt;/AuthContext.Provider&gt;;
-}
-// wrap {children} with &lt;AuthProvider&gt; in app/layout.jsx
-
-// 3. consume — Navbar drops its useEffect + localStorage code entirely
-const { user, logout } = useContext(AuthContext);</code></pre>
-
-<h3>5.4 Controlled vs Uncontrolled Components</h3>
-<p><strong>Controlled</strong> — React state owns the value; used by <em>every</em> form in this project:</p>
-<pre><code>// app/login/page.jsx — React always knows the field content
-&lt;input
-  type="email"
-  name="email"
-  value={formData.email}          // value comes FROM state
-  onChange={handleChange}         // every keystroke updates state
-  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-/&gt;</code></pre>
-<p><strong>Uncontrolled</strong> — the DOM owns the value, read via <code>useRef</code> only when needed (<code>defaultValue</code>, no <code>onChange</code>). Simpler, but you lose live validation and easy reset — which is exactly why this project's validation-heavy forms are all controlled.</p>
-
-<h3>5.5 React.memo</h3>
-<p>Wraps a component and skips its re-render when props are unchanged (shallow comparison). <em>Not used in this project</em> — but you already used it in the playground: the <code>Child</code> button in the <code>useCallback</code> example (3.10) is wrapped in <code>memo()</code>, which is exactly why typing in the text box next to it never logged another "Child rendered." The best candidates in the real project are its pure display components:</p>
-<pre><code>// components/ErrorMessage.jsx — one-line improvement
-import React from 'react';
-const ErrorMessage = React.memo(function ErrorMessage({ message }) {
-  if (!message) return null;
-  return &lt;div className="alert alert-danger py-2"&gt;{message}&lt;/div&gt;;
-});
-export default ErrorMessage;
-// Now toggling 'loading' in LoginPage no longer re-renders ErrorMessage.
-// UserTable is the biggest win — a large table with unchanged 'users' between renders.</code></pre>
-
-<h3>5.6 Error Boundaries</h3>
-<p>Catch errors thrown during rendering in the child tree and show a fallback instead of a blank page (<code>try/catch</code> doesn't work in the render cycle). Must be a <strong>class component</strong>. In this project, if <code>UserTable</code> threw while mapping a bad row, the whole admin page would go blank — wrapping it in a boundary (or simply adding a per-route <code>error.jsx</code>, section 4.8) shows "Something went wrong" with a retry button instead.</p>
-
-<!-- ============ CHAPTER 6 ============ -->
-<h2>Chapter 6 — Interview Essentials (Quick Q&amp;A)</h2>
-
-<table>
-  <thead><tr><th>Question</th><th>Short answer (tied to this project)</th></tr></thead>
-  <tbody>
-    <tr><td>What is React?</td><td>A JS library for building UIs from reusable components; update state and React updates the DOM — <code>setApiError('Login failed')</code> instead of <code>document.getElementById(...)</code>.</td></tr>
-    <tr><td>What is the Virtual DOM?</td><td>An in-memory copy of the DOM. React diffs old vs new and updates only the changed parts — deleting a user updates only that table row, not the Navbar or search bar.</td></tr>
-    <tr><td>What is an SPA?</td><td>One HTML page, content updated without full reloads. The Navbar stays mounted while pages change via <code>&lt;Link&gt;</code> and <code>router.push</code>.</td></tr>
-    <tr><td>What is JSX?</td><td>HTML-like syntax inside JavaScript, compiled to <code>React.createElement()</code> calls — the return block of every page.</td></tr>
-    <tr><td>Props vs state?</td><td>Props come from the parent, read-only. State belongs to the component. <code>AdminUsersPage</code> owns <code>users</code> state and passes it to <code>UserTable</code> as a prop.</td></tr>
-    <tr><td>What is the <code>children</code> prop?</td><td>Whatever JSX sits between a component's tags — how <code>app/layout.jsx</code> wraps every page.</td></tr>
-    <tr><td>Why the <code>key</code> prop?</td><td>Lets React track list items across renders. <code>UserTable</code> uses <code>key={user.id}</code>, never the array index (rows are deleted and reordered by search).</td></tr>
-    <tr><td>Why useState / useEffect?</td><td><code>useState</code> for data that drives UI (formData, loading, apiError). <code>useEffect</code> for side effects after render — <code>getMe()</code> in ProfilePage, localStorage in Navbar.</td></tr>
-    <tr><td>useEffect dependency array?</td><td><code>[]</code> = once on mount (ProfilePage); <code>[id]</code> = also when id changes (UserDetailsPage); no array = every render (avoid).</td></tr>
-    <tr><td>Cleanup in useEffect?</td><td>The returned function; runs before unmount/re-run. Not needed here (no timers), but it's <code>return () =&gt; clearInterval(t)</code>.</td></tr>
-    <tr><td>File-based routing?</td><td><code>app/login/page.jsx</code> → <code>/login</code>. The folder structure <em>is</em> the router — this project configured zero routes.</td></tr>
-    <tr><td>Dynamic route?</td><td><code>app/admin/users/[id]/page.jsx</code> serves <code>/admin/users/5</code>, <code>/42</code>… read with <code>const { id } = useParams()</code> and passed to <code>getUserById(id)</code>.</td></tr>
-    <tr><td>What does <code>'use client'</code> do?</td><td>Marks a file as a Client Component so hooks, events, and browser APIs work. All 6 pages + Navbar have it; <code>layout.jsx</code> doesn't.</td></tr>
-    <tr><td>Server vs Client Component?</td><td>Server: renders on server, no hooks/browser APIs (<code>layout.jsx</code>). Client: runs in browser, full interactivity (every page).</td></tr>
-    <tr><td>What is hydration?</td><td>React attaches event handlers to server-rendered HTML in the browser. Navbar reads localStorage inside <code>useEffect</code> to avoid a hydration mismatch (the playground's useRef example, 3.9, shows what happens when you don't).</td></tr>
-    <tr><td>What is localStorage?</td><td>Browser key-value storage that survives refresh. Login stores <code>token</code> and <code>user</code> (<code>JSON.stringify</code>); Navbar/guards read them back (<code>JSON.parse</code>).</td></tr>
-    <tr><td>How is JWT handled?</td><td>Stored after login; the request interceptor in <code>api.js</code> adds <code>Authorization: Bearer &lt;token&gt;</code> to every request automatically.</td></tr>
-    <tr><td>What happens on 401?</td><td>The response interceptor in <code>api.js</code> clears localStorage and does <code>window.location.href = '/login'</code> — handled globally, not per page.</td></tr>
-    <tr><td>Protected route?</td><td>The page checks the token (and role) in <code>useEffect</code> and redirects — see the guard at the top of ProfilePage and AdminUsersPage.</td></tr>
-    <tr><td>Role-based routing?</td><td>After login: admin → <code>/admin/users</code>, user → <code>/profile</code>. Admin pages re-check <code>currentUser.role !== 'admin'</code> in case someone types the URL.</td></tr>
-    <tr><td>Why Axios (+ interceptors)?</td><td>Easier than fetch; the two interceptors in <code>api.js</code> attach the JWT and handle 401s once instead of in 10+ calls.</td></tr>
-    <tr><td>Why <code>e.preventDefault()</code>?</td><td>First line of every <code>handleSubmit</code> — stops the browser's form-submit page reload so React state survives.</td></tr>
-    <tr><td>What is async/await?</td><td>Asynchronous API calls that read sequentially: <code>const result = await login(formData)</code> wrapped in try/catch/finally.</td></tr>
-    <tr><td>Optional chaining <code>?.</code>?</td><td>Every catch block: <code>err.response?.data?.message || 'fallback'</code> — no crash when the server is offline.</td></tr>
-    <tr><td>What is FormData?</td><td>Browser API for <code>multipart/form-data</code>: <code>formData.append('photo', file)</code> in ProfilePage; the key <code>'photo'</code> must match the backend's multer field.</td></tr>
-    <tr><td>Env variables in Next.js?</td><td><code>.env.local</code> holds <code>NEXT_PUBLIC_API_URL</code>; only <code>NEXT_PUBLIC_*</code> vars reach browser code — read in <code>api.js</code>.</td></tr>
-    <tr><td>Lifting state up?</td><td><code>AdminUsersPage</code> owns data + <code>handleDelete</code>; <code>UserTable</code> only calls <code>onDelete(user.id)</code> — the table announces clicks, the parent acts.</td></tr>
-    <tr><td>Why <code>data-testid</code>?</td><td>Stable QA selectors: <code>login-email</code>, <code>register-submit</code>, <code>search-input</code>, <code>delete-user-button</code>… survive CSS/text changes in Playwright/Cypress tests.</td></tr>
-  </tbody>
-</table>
-
-<!-- ============ CHAPTER 7 ============ -->
-<h2>Chapter 7 — Frontend Implementation (Step by Step)</h2>
-<p class="note">Having built and run every JSX/Events pattern and every hook in Chapters 2–3 through the practice playground, you're ready to see how the same building blocks combine into a full application below.</p>
-
-<h3>Step 0 — Project Structure &amp; Routing</h3>
-<pre><code>frontend/
-├── app/
-│   ├── login/page.jsx                 → /login
-│   ├── register/page.jsx              → /register
-│   ├── profile/page.jsx               → /profile
-│   ├── admin/users/page.jsx           → /admin/users
-│   ├── admin/users/[id]/page.jsx      → /admin/users/5   (dynamic)
-│   ├── admin/users/[id]/edit/page.jsx → /admin/users/5/edit
-│   ├── layout.jsx                     ← root layout, imports Bootstrap
-│   ├── page.jsx                       ← "/" redirects to /login
-│   └── globals.css
-├── components/    Navbar, Loading, ErrorMessage, SuccessMessage, UserTable, UserForm
-├── services/      api.js, authService.js, userService.js
-├── utils/         validation.js
-├── .env.local     NEXT_PUBLIC_API_URL=http://localhost:5000
-├── next.config.js
-└── package.json</code></pre>
-<p class="note">Folders inside <code>app/</code> <em>are</em> the routes. <code>[id]</code> is a dynamic segment read with <code>useParams()</code>. Components render UI, services own all API calls, utils hold pure helpers.</p>
-
-<h3>Step 1 — Initialization &amp; Configuration</h3>
-<pre><code>// package.json — see Chapter 1.4 for the full file
-
-// next.config.js — the project's actual file (intentionally empty)
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-module.exports = nextConfig;
-
-// .env.local — NEXT_PUBLIC_ vars are readable in browser code
-NEXT_PUBLIC_API_URL=http://localhost:5000</code></pre>
-<pre><code>cd frontend
-mkdir app\login app\register app\profile "app\admin\users\[id]\edit" components services utils
-npm install</code></pre>
-
-<h3>Step 2 — Root Layout &amp; Entry Pages</h3>
-<pre><code>/* app/globals.css — the entire file */
-body {
-  background-color: #f8f9fa;
-}
-
-// app/layout.jsx — Server Component, wraps every page
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './globals.css';
-
-export const metadata = {
-  title: 'User Management Mini App',
-  description: 'QA/SDET Teaching Application',
-};
-
-export default function RootLayout({ children }) {
-  return (
-    &lt;html lang="en"&gt;
-      &lt;body&gt;{children}&lt;/body&gt;
-    &lt;/html&gt;
-  );
-}
-
-// app/page.jsx — root redirect so "/" never shows a blank page
-import { redirect } from 'next/navigation';
-export default function HomePage() {
-  redirect('/login');
-}</code></pre>
-
-<h3>Step 3 — Form Validation Utilities</h3>
-<p>Client-side validation gives instant feedback before any network call — but <strong>always validate on the backend too</strong> (frontend checks can be bypassed with Postman). Each function returns an errors object: empty <code>{}</code> = valid.</p>
-<pre><code>// utils/validation.js
-export const validateEmail = (email) =&gt; /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-export const validatePhone = (phone) =&gt; /^\d{7,15}$/.test(phone);
-
-export const validateRegisterForm = (data) =&gt; {
-  const errors = {};
-  if (!data.firstname?.trim()) errors.firstname = 'First name is required';
-  if (!data.lastname?.trim())  errors.lastname  = 'Last name is required';
-  if (!data.email?.trim()) {
-    errors.email = 'Email is required';
-  } else if (!validateEmail(data.email)) {
-    errors.email = 'Invalid email format';
-  }
-  if (data.phonenumber &amp;&amp; !validatePhone(data.phonenumber)) {
-    errors.phonenumber = 'Phone must be 7-15 digits';
-  }
-  if (!data.password) {
-    errors.password = 'Password is required';
-  } else if (data.password.length &lt; 4) {
-    errors.password = 'Password must be at least 4 characters';
-  }
-  return errors;
-};
-
-// validateLoginForm — email + password only
-// validateEditUserForm — same as register minus the password check</code></pre>
-
-<h3>Step 4 — API Service Layer (the heart of the app)</h3>
-<pre><code>// services/api.js — one Axios instance for the whole app
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-// REQUEST INTERCEPTOR — adds JWT Bearer token before every request
-api.interceptors.request.use((config) =&gt; {
-  // typeof window check: localStorage only exists in browser, not during SSR
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// RESPONSE INTERCEPTOR — handles expired/invalid tokens globally
-api.interceptors.response.use(
-  (response) =&gt; response,
-  (error) =&gt; {
-    if (error.response?.status === 401 &amp;&amp; typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default api;</code></pre>
-<pre><code>// services/authService.js — pages never import axios directly
-import api from './api';
-
-export const register = (userData) =&gt;
-  api.post('/api/auth/register', userData).then((r) =&gt; r.data);
-
-// returns { success, data: { token, user } }
-export const login = (credentials) =&gt;
-  api.post('/api/auth/login', credentials).then((r) =&gt; r.data);
-
-export const getMe = () =&gt;
-  api.get('/api/auth/me').then((r) =&gt; r.data);
-
-// JWT is stateless — logout just clears localStorage
-export const logout = () =&gt; {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-};
-
-// services/userService.js
-export const getAllUsers = ({ page = 1, limit = 10, search = '' } = {}) =&gt;
-  api.get('/api/users', { params: { page, limit, search } }).then((r) =&gt; r.data);
-export const getUserById = (id) =&gt; api.get(`/api/users/${id}`).then((r) =&gt; r.data);
-export const updateUser  = (id, userData) =&gt; api.put(`/api/users/${id}`, userData).then((r) =&gt; r.data);
-export const deleteUser  = (id) =&gt; api.delete(`/api/users/${id}`).then((r) =&gt; r.data);
-
-// files need multipart/form-data — key 'photo' must match the backend's multer field
-export const updateProfilePhoto = (formData) =&gt;
-  api.put('/api/users/profile/photo', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }).then((r) =&gt; r.data);</code></pre>
-
-<h3>Step 5 — Reusable Components</h3>
-<pre><code>// components/Loading.jsx — spinner shown during any API call
-export default function Loading({ message = 'Loading...' }) {
-  return (
-    &lt;div className="d-flex justify-content-center align-items-center p-5" data-testid="loading"&gt;
-      &lt;div className="text-center"&gt;
-        &lt;div className="spinner-border text-primary mb-2" role="status"&gt;
-          &lt;span className="visually-hidden"&gt;Loading...&lt;/span&gt;
-        &lt;/div&gt;
-        &lt;p className="text-muted small mb-0"&gt;{message}&lt;/p&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}
-
-// components/ErrorMessage.jsx — full code in Chapter 2.2
-// components/SuccessMessage.jsx — identical shape with alert-success + role="status"</code></pre>
-<pre><code>// components/Navbar.jsx (trimmed) — 'use client': useState, useEffect,
-// useRouter, and localStorage are all browser-only
-'use client';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { logout } from '../services/authService';
-
-export default function Navbar() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
-
-  useEffect(() =&gt; {
-    // read localStorage AFTER render — avoids SSR hydration mismatch
-    const raw = localStorage.getItem('user');
-    if (raw) {
-      try { setUser(JSON.parse(raw)); } catch {}
-    }
-  }, []);
-
-  const handleLogout = () =&gt; {
-    logout();
-    setUser(null);
-    router.push('/login');
-  };
-
-  return (
-    &lt;nav className="navbar navbar-dark bg-primary px-4 shadow-sm"&gt;
-      &lt;Link href="/" className="navbar-brand fw-bold"&gt;User Management App&lt;/Link&gt;
-      {user ? (
-        &lt;&gt;
-          &lt;span className="text-white small"&gt;
-            {user.firstname} {user.lastname}
-            &lt;span className="badge bg-light text-primary ms-1"&gt;{user.role}&lt;/span&gt;
-          &lt;/span&gt;
-          {user.role === 'admin'
-            ? &lt;Link href="/admin/users"&gt;Users&lt;/Link&gt;
-            : &lt;Link href="/profile"&gt;Profile&lt;/Link&gt;}
-          &lt;button onClick={handleLogout} className="btn btn-light btn-sm"
-                  data-testid="logout-button"&gt;Logout&lt;/button&gt;
-        &lt;/&gt;
-      ) : (
-        &lt;&gt;
-          &lt;Link href="/login"&gt;Login&lt;/Link&gt;
-          &lt;Link href="/register" className="btn btn-outline-light btn-sm"&gt;Register&lt;/Link&gt;
-        &lt;/&gt;
-      )}
-    &lt;/nav&gt;
-  );
-}</code></pre>
-<ul>
-  <li><strong>UserTable.jsx</strong> (excerpts in 2.7 and 2.8): Bootstrap table; View/Edit are <code>&lt;Link&gt;</code>s to <code>/admin/users/${user.id}</code>; Delete calls the <code>onDelete(user.id)</code> <em>prop</em> — the table doesn't know <em>how</em> to delete, the parent owns the API call (<strong>lifting state up</strong>).</li>
-  <li><strong>UserForm.jsx</strong> (full pattern in 2.10): controlled inputs with <code>is-invalid</code>/<code>invalid-feedback</code>, a role <code>&lt;select&gt;</code>, and a submit button disabled while <code>loading</code>.</li>
-</ul>
-
-<h3>Step 6 — Pages</h3>
-<p>All six pages follow the same recipe: <code>'use client'</code> → state for <code>formData / errors / loading / apiError</code> → route guard in <code>useEffect</code> → handler calling a service. Here is the project's real login page:</p>
-<pre><code>// app/login/page.jsx — the actual file
-'use client';
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { login } from '../../services/authService';
-import { validateLoginForm } from '../../utils/validation';
-import ErrorMessage from '../../components/ErrorMessage';
-
-export default function LoginPage() {
-  const router = useRouter();
-
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [apiError, setApiError] = useState('');
-
-  const handleChange = (e) =&gt; {
-    const { name, value } = e.target;
-    setFormData((prev) =&gt; ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) =&gt; ({ ...prev, [name]: '' })); // clear error while typing
-  };
-
-  const handleSubmit = async (e) =&gt; {
-    e.preventDefault();
-    setApiError('');
-
-    const validationErrors = validateLoginForm(formData);
-    if (Object.keys(validationErrors).length &gt; 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const result = await login(formData);
-
-      // store credentials for subsequent requests (read by api.js interceptor)
-      localStorage.setItem('token', result.data.token);
-      localStorage.setItem('user', JSON.stringify(result.data.user));
-
-      // role-based redirect
-      if (result.data.user.role === 'admin') {
-        router.push('/admin/users');
-      } else {
-        router.push('/profile');
-      }
-    } catch (err) {
-      setApiError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    &lt;div className="min-vh-100 bg-light d-flex align-items-center justify-content-center"&gt;
-      &lt;div className="card shadow-sm" style={{ width: '100%', maxWidth: '400px' }}&gt;
-        &lt;div className="card-body p-4"&gt;
-          &lt;h1 className="card-title text-center mb-4 h4"&gt;Login&lt;/h1&gt;
-
-          &lt;ErrorMessage message={apiError} /&gt;
-
-          &lt;form onSubmit={handleSubmit}&gt;
-            &lt;div className="mb-3"&gt;
-              &lt;label className="form-label"&gt;Email&lt;/label&gt;
-              &lt;input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                data-testid="login-email"
-              /&gt;
-              {errors.email &amp;&amp; &lt;div className="invalid-feedback"&gt;{errors.email}&lt;/div&gt;}
-            &lt;/div&gt;
-
-            &lt;div className="mb-4"&gt;
-              &lt;label className="form-label"&gt;Password&lt;/label&gt;
-              &lt;input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                data-testid="login-password"
-              /&gt;
-              {errors.password &amp;&amp; &lt;div className="invalid-feedback"&gt;{errors.password}&lt;/div&gt;}
-            &lt;/div&gt;
-
-            &lt;button type="submit" disabled={loading}
-                    className="btn btn-primary w-100 mb-3" data-testid="login-submit"&gt;
-              {loading
-                ? &lt;&gt;&lt;span className="spinner-border spinner-border-sm me-2" role="status" /&gt;Logging in...&lt;/&gt;
-                : 'Login'}
-            &lt;/button&gt;
-          &lt;/form&gt;
-
-          &lt;p className="text-center text-muted small mb-0"&gt;
-            No account? &lt;Link href="/register"&gt;Register&lt;/Link&gt;
-          &lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-<p>The other pages reuse this recipe — their distinctive parts:</p>
-<pre><code>// app/register/page.jsx — success message, then a DELAYED redirect
-await register(formData);
-setSuccess('Registration successful! Redirecting to login...');
-setTimeout(() =&gt; router.push('/login'), 2000);   // let the user read the message
-
-// app/profile/page.jsx — photo upload with FormData
-const handlePhotoUpload = async (e) =&gt; {
-  const file = e.target.files[0];
-  if (!file) return;
-  const formData = new FormData();
-  formData.append('photo', file);      // key must match the backend's multer field
-  setUploading(true);
-  const result = await updateProfilePhoto(formData);
-  setUser(result.data);                // response contains the new photoUrl
-  setSuccess('Profile photo updated!');
-};
-
-// app/admin/users/page.jsx — fetch with pagination: note the response shape
-const fetchUsers = async (page, searchTerm) =&gt; {
-  const result = await getAllUsers({ page, limit: 10, search: searchTerm });
-  setUsers(result.data.users);                       // the rows
-  setPagination({
-    page: result.data.page,                          // current page
-    totalPages: result.data.totalPages,              // for Previous/Next buttons
-    total: result.data.total,                        // "(N total)" in the heading
-  });
-};
-
-// app/admin/users/page.jsx — delete with a browser confirm dialog
-const handleDelete = async (id) =&gt; {
-  if (!confirm('Delete this user? This cannot be undone.')) return;
-  await deleteUser(id);
-  setSuccess('User deleted');
-  fetchUsers(pagination.page, search);   // refresh the current page
-};</code></pre>
-<table>
-  <thead><tr><th>Page</th><th>Guard</th><th>Distinctive parts</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Register</strong></td><td>none (public)</td><td>5 fields via <code>validateRegisterForm</code>; success + 2s delayed redirect to <code>/login</code></td></tr>
-    <tr><td><strong>Login</strong></td><td>none (public)</td><td>Stores token + user; role-based redirect (full code above)</td></tr>
-    <tr><td><strong>Profile</strong></td><td>token → else <code>/login</code></td><td><code>getMe()</code> on mount; FormData photo upload; separate <code>uploading</code> state; fallback avatar = first letter</td></tr>
-    <tr><td><strong>Admin Users</strong></td><td>token + admin role</td><td><code>fetchUsers(page, search)</code>; search form; Previous/Next pagination; <code>confirm()</code> before delete; empty state</td></tr>
-    <tr><td><strong>User Details</strong></td><td>token + admin role</td><td><code>useParams()</code> → <code>getUserById(id)</code> in <code>useEffect([id])</code>; ← Back link</td></tr>
-    <tr><td><strong>Edit User</strong></td><td>token + admin role</td><td>Pre-fills <code>UserForm</code> from the API; <code>saving</code> state separate from initial <code>loading</code></td></tr>
-  </tbody>
-</table>
-
-<h3>Step 7 — Run the Frontend</h3>
-<pre><code># backend must already be running on http://localhost:5000
-cd frontend
-npm run dev        # → http://localhost:3000 (redirects to /login)</code></pre>
-<table>
-  <thead><tr><th>URL</th><th>Expected</th></tr></thead>
-  <tbody>
-    <tr><td><code>/</code></td><td>Redirects to <code>/login</code></td></tr>
-    <tr><td><code>/login</code></td><td>Login form — try <code>admin@test.com / 1234</code></td></tr>
-    <tr><td><code>/admin/users</code> (admin)</td><td>Users table with search &amp; pagination</td></tr>
-    <tr><td><code>/profile</code> (user)</td><td>Profile card with photo upload</td></tr>
-    <tr><td><code>/admin/users/:id</code> and <code>/:id/edit</code></td><td>Detail view / pre-filled edit form</td></tr>
-  </tbody>
-</table>
-
-<!-- ============ CHAPTER 8 ============ -->
-<h2>Chapter 8 — Verification &amp; Final Interview Prep</h2>
-
-<h3>8.1 End-to-End Verification</h3>
-<p><strong>Admin flow:</strong> visit <code>/</code> → redirected to login → login as <code>admin@test.com / 1234</code> → lands on <code>/admin/users</code> → View a user → Edit and save (green success) → Delete a non-admin user (confirm dialog appears first) → Search filters the table → Logout returns to login.</p>
-<p><strong>User flow:</strong> register (blank submit shows per-field errors; valid data shows success then redirects after 2s) → login → lands on <code>/profile</code> (not admin) → upload a photo (appears in the circular frame).</p>
-<p><strong>Error handling:</strong> wrong password → red error banner; duplicate email rejected; regular user visiting <code>/admin/users</code> → redirected to <code>/profile</code>; no token → <code>/login</code>.</p>
-<p><strong>DevTools Network tab:</strong> login = <code>POST /api/auth/login</code>; user list = <code>GET /api/users?page=1&amp;limit=10&amp;search=</code> with <code>Authorization: Bearer eyJ…</code>; photo upload = <code>PUT /api/users/profile/photo</code> as <code>multipart/form-data</code>.</p>
-
-<h3>8.2 Key Concepts Summary</h3>
-<table>
-  <thead><tr><th>Concept</th><th>Where it lives in the project</th></tr></thead>
-  <tbody>
-    <tr><td>Component</td><td><code>components/</code> — Navbar, Loading, ErrorMessage, SuccessMessage, UserTable, UserForm</td></tr>
-    <tr><td>Props / State</td><td><code>UserTable({ users, onDelete })</code> / four <code>useState</code> calls per page</td></tr>
-    <tr><td>useEffect</td><td>Route guards + data fetch on every protected page</td></tr>
-    <tr><td>'use client'</td><td>First line of all 6 pages + Navbar</td></tr>
-    <tr><td>Controlled form</td><td>Every input: <code>value={formData.x}</code> + <code>onChange={handleChange}</code></td></tr>
-    <tr><td>Axios interceptor</td><td><code>services/api.js</code> — JWT attach + global 401 handling</td></tr>
-    <tr><td>Dynamic route [id]</td><td><code>app/admin/users/[id]/</code> — details and edit</td></tr>
-    <tr><td>Route guard / role routing</td><td>Top of each protected page's <code>useEffect</code>; login's role-based redirect</td></tr>
-    <tr><td>FormData / Pagination / data-testid</td><td>Profile photo upload / Admin list Previous-Next / every interactive element</td></tr>
-  </tbody>
-</table>
-
-<h3>8.3 Project Explanation for Interview</h3>
-<p class="note">"I built a User Management frontend with Next.js, React, Axios, and Bootstrap against an existing backend API. It supports registration, login, profile with photo upload, and an admin panel with search, pagination, and CRUD. I separated UI components, API services, and validation utilities. Axios interceptors attach the JWT automatically and handle 401s globally, and route guards plus role-based routing keep admin and user areas separate."</p>
-
-<h3>8.4 Must-Practice Viva Questions</h3>
-<ul>
-  <li>Explain the full login flow from form submit to redirect.</li>
-  <li>Where is the JWT stored and how is it attached to requests? What happens on 401?</li>
-  <li>How do route guarding and role-based routing work?</li>
-  <li>Frontend vs backend validation — why both?</li>
-  <li>How do pagination and search work between frontend and backend? (What does <code>result.data</code> contain?)</li>
-  <li>Why separate service files and reusable components (Loading, ErrorMessage, UserTable, UserForm)?</li>
-  <li>How does file upload work with FormData?</li>
-  <li>Why is <code>'use client'</code> needed on every page here, and why does Navbar read localStorage inside useEffect?</li>
-  <li>useState vs useEffect — difference and when to use each?</li>
-  <li>What is data-testid for, and how would you improve this project for production?</li>
-</ul>
-
-<h3>8.5 Production Improvement Ideas</h3>
-<p>httpOnly secure cookies instead of localStorage · <code>middleware.js</code> for central route protection (4.7) · refresh-token flow · <code>next/image</code> for photos (4.6) · Context API for auth state (5.3) · <code>loading.jsx</code>/<code>error.jsx</code> per route (4.8) · <code>React.memo</code> on display components (5.5) · stricter image validation · Playwright tests for all flows · TypeScript.</p>
-
-<h3>8.6 Final Checklist</h3>
-<ul>
-  <li>Playground: every JSX/Events page (2.2–2.10) and every hook page (3.3–3.13) built and clicked through</li>
-  <li>Backend on :5000, frontend on :3000</li>
-  <li>Register and login work for admin and regular user; token stored after login</li>
-  <li>Protected API calls send the Authorization header</li>
-  <li>Admin: list, search, pagination, view, edit, delete (with confirm dialog) all work</li>
-  <li>User: profile view and photo upload work</li>
-  <li>Unauthorized users are redirected correctly; Network tab shows correct API calls</li>
-</ul>
-
+  <h1>Learn Next.js with demo-project</h1>
+  <p>
+    This ebook follows one project only: <code>demo-project</code>. Every chapter explains how to
+    build the existing files in that project, and every source snippet below is read directly from
+    <code>demo-project</code>.
+  </p>
+  <p>
+    The goal is foundation: students should understand what Next.js is, how this project is
+    structured, and how React concepts such as components, JSX, events, lifecycle, and hooks work in
+    a running app. Larger application features belong to a separate project later.
+  </p>
+
+  <!-- ============ TOC ============ -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li>Demo Project Overview</li>
+      <li>React JSX Syntax and Events</li>
+      <li>Component Lifecycle and Hooks</li>
+      <li>Next.js Essentials</li>
+      <li>React Concepts in This Project</li>
+      <li>Interview Essentials</li>
+      <li>Build Order</li>
+      <li>Verification Checklist</li>
+    </ol>
+  </div>
+
+  <h2>Chapter 1 - Demo Project Overview</h2>
+  <p>
+    The project is a small App Router based Next.js app. It teaches one concept per route:
+    components, props, fragments, JSX rules, conditional rendering, lists, events, and common hooks.
+  </p>
+
+  <h3>1.1 What Students Learn Here</h3>
+  <table>
+    <thead>
+      <tr><th>Area</th><th>What this project teaches</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Next.js</td><td>App Router folders, <code>page.jsx</code>, <code>layout.jsx</code>, <code>Link</code>, dynamic routes, and Client Components</td></tr>
+      <tr><td>React components</td><td>Reusable functions that return JSX and receive props</td></tr>
+      <tr><td>JSX syntax</td><td>One root element, <code>className</code>, expressions inside braces, self-closing tags, and fragments</td></tr>
+      <tr><td>Events</td><td>Click, input, and submit handlers that update UI state</td></tr>
+      <tr><td>Lifecycle</td><td>Mounting, updating, cleanup, and dependency arrays through <code>useEffect</code></td></tr>
+      <tr><td>Hooks</td><td><code>useState</code>, <code>useEffect</code>, <code>useRouter</code>, <code>useParams</code>, <code>useRef</code>, <code>useCallback</code>, <code>useMemo</code>, <code>useContext</code>, and <code>useReducer</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.2 React and Next.js in This Project</h3>
+  <p>
+    React is the UI library. It gives us components, JSX, props, state, events, and hooks. Next.js is
+    the framework around React. It gives us routing, layout files, development/build commands, and
+    conventions for server and client rendering.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Question</th><th>React answer</th><th>Next.js answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>How do we build UI?</td><td>With components that return JSX</td><td>Those components live inside route files such as <code>app/page.jsx</code></td></tr>
+      <tr><td>How do we create pages?</td><td>React itself does not define file-based routes</td><td>A folder with <code>page.jsx</code> becomes a route</td></tr>
+      <tr><td>How do we share a page shell?</td><td>React can compose children</td><td><code>app/layout.jsx</code> wraps the route tree</td></tr>
+      <tr><td>How do we handle browser interaction?</td><td>Use state, effects, refs, context, reducers, and event handlers</td><td>Add <code>'use client'</code> when a route needs those browser-side features</td></tr>
+    </tbody>
+  </table>
+
+  <h3>1.3 Project Structure</h3>
+  <pre><code>demo-project/
+|-- app/
+|   |-- page.jsx
+|   |-- layout.jsx
+|   |-- globals.css
+|   |-- creating-component/page.jsx
+|   |-- using-components/page.jsx
+|   |-- fragments/page.jsx
+|   |-- jsx-syntax/page.jsx
+|   |-- conditional-rendering/page.jsx
+|   |-- rendering-lists/page.jsx
+|   |-- events/page.jsx
+|   `-- hooks/
+|       |-- use-state/page.jsx
+|       |-- use-effect/page.jsx
+|       |-- use-router/page.jsx
+|       |-- use-router/destination/page.jsx
+|       |-- use-params/page.jsx
+|       |-- use-params/[id]/page.jsx
+|       |-- use-ref/page.jsx
+|       |-- use-callback/page.jsx
+|       |-- use-memo/page.jsx
+|       |-- use-context/ThemeContext.jsx
+|       |-- use-context/page.jsx
+|       `-- use-reducer/page.jsx
+|-- components/
+|   |-- PageHeader.jsx
+|   |-- WelcomeCard.jsx
+|   `-- ProfileBadge.jsx
+|-- jsconfig.json
+|-- next.config.js
+`-- package.json</code></pre>
+
+  <h3>1.4 Install and Run</h3>
+  <p>
+    The app needs only Next.js, React, and React DOM. The config files are intentionally minimal so
+    students can see what a clean Next.js setup looks like.
+  </p>
+  <demo-source data-files="package.json,next.config.js,jsconfig.json"></demo-source>
+  <pre><code>cd demo-project
+npm install
+npm run dev</code></pre>
+
+  <h3>1.5 Root Layout and Global CSS</h3>
+  <p>
+    <code>layout.jsx</code> wraps every route. <code>globals.css</code> defines the shared page,
+    button, card, table, and code styles used by all lessons.
+  </p>
+  <demo-source data-files="app/layout.jsx,app/globals.css"></demo-source>
+
+  <h3>1.6 Home Page Navigation</h3>
+  <p>
+    The home page is the index of lessons. Each link points to a route under <code>app/</code>.
+  </p>
+  <demo-source data-files="app/page.jsx"></demo-source>
+
+  <h3>1.7 Shared Lesson Header</h3>
+  <p>
+    Each lesson page uses the same header component so navigation, title, and description stay
+    consistent.
+  </p>
+  <demo-source data-files="components/PageHeader.jsx"></demo-source>
+
+  <h2>Chapter 2 - React JSX Syntax and Events</h2>
+  <p>
+    These lessons build the basic React mental model: a component is a function, JSX is the markup
+    returned by that function, props pass data in, state changes the UI, and events respond to user
+    actions.
+  </p>
+
+  <h3>2.1 Creating a Component</h3>
+  <p>
+    Build a reusable component in <code>components/WelcomeCard.jsx</code>, then render it from the
+    route file. The function name starts with a capital letter and returns JSX.
+  </p>
+  <demo-source data-files="components/WelcomeCard.jsx,app/creating-component/page.jsx"></demo-source>
+
+  <h3>2.2 Using Components with Props</h3>
+  <p>
+    Props are read-only values passed from a parent component to a child component. This lesson
+    passes different values into the same <code>ProfileBadge</code> component.
+  </p>
+  <demo-source data-files="components/ProfileBadge.jsx,app/using-components/page.jsx"></demo-source>
+
+  <h3>2.3 Fragments</h3>
+  <p>
+    A React component must return one root value. A Fragment groups sibling elements without adding
+    an unnecessary wrapper element to the DOM.
+  </p>
+  <demo-source data-files="app/fragments/page.jsx"></demo-source>
+
+  <h3>2.4 JSX Syntax Rules</h3>
+  <p>
+    JSX looks like HTML, but it is JavaScript. Use <code>className</code>, close every tag, use
+    braces for JavaScript expressions, and return one root element.
+  </p>
+  <demo-source data-files="app/jsx-syntax/page.jsx"></demo-source>
+
+  <h3>2.5 Conditional Rendering</h3>
+  <p>
+    JSX does not allow <code>if/else</code> directly inside markup. Use <code>&amp;&amp;</code> for
+    optional UI, a ternary for exactly two choices, and <code>null</code> to render nothing.
+  </p>
+  <demo-source data-files="app/conditional-rendering/page.jsx"></demo-source>
+
+  <h3>2.6 Rendering Lists</h3>
+  <p>
+    Use <code>map()</code> to turn an array into JSX. Give every repeated element a stable
+    <code>key</code> so React can track changes correctly.
+  </p>
+  <demo-source data-files="app/rendering-lists/page.jsx"></demo-source>
+
+  <h3>2.7 Event Handling</h3>
+  <p>
+    Event handlers are functions passed to JSX props such as <code>onClick</code>,
+    <code>onChange</code>, and <code>onSubmit</code>. Form submit handlers usually call
+    <code>preventDefault()</code>.
+  </p>
+  <demo-source data-files="app/events/page.jsx"></demo-source>
+
+  <h2>Chapter 3 - Component Lifecycle and Hooks</h2>
+  <p>
+    Hooks let function components remember values, run side effects, navigate, read route params,
+    access DOM nodes, memoize work, share context, and manage related state.
+  </p>
+
+  <h3>3.1 useState</h3>
+  <p>
+    <code>useState</code> stores data that affects rendering. Calling the setter schedules a
+    re-render with the new value.
+  </p>
+  <demo-source data-files="app/hooks/use-state/page.jsx"></demo-source>
+
+  <h3>3.2 useEffect</h3>
+  <p>
+    <code>useEffect</code> runs side effects after render. The dependency array controls when the
+    effect runs again.
+  </p>
+  <demo-source data-files="app/hooks/use-effect/page.jsx"></demo-source>
+
+  <h3>3.3 useRouter</h3>
+  <p>
+    <code>useRouter</code> from <code>next/navigation</code> performs programmatic navigation from a
+    Client Component.
+  </p>
+  <demo-source data-files="app/hooks/use-router/page.jsx,app/hooks/use-router/destination/page.jsx"></demo-source>
+
+  <h3>3.4 useParams</h3>
+  <p>
+    Dynamic route folders such as <code>[id]</code> create URL params. <code>useParams()</code>
+    reads those values in a Client Component.
+  </p>
+  <demo-source data-files="app/hooks/use-params/page.jsx,app/hooks/use-params/[id]/page.jsx"></demo-source>
+
+  <h3>3.5 useRef</h3>
+  <p>
+    <code>useRef</code> can point to a DOM element or hold a mutable value that does not trigger a
+    re-render when it changes.
+  </p>
+  <demo-source data-files="app/hooks/use-ref/page.jsx"></demo-source>
+
+  <h3>3.6 useCallback</h3>
+  <p>
+    <code>useCallback</code> memoizes a function reference. It is most useful when passing callbacks
+    to memoized child components.
+  </p>
+  <demo-source data-files="app/hooks/use-callback/page.jsx"></demo-source>
+
+  <h3>3.7 useMemo</h3>
+  <p>
+    <code>useMemo</code> memoizes a calculated value. Use it for expensive calculations or derived
+    values that should only recompute when dependencies change.
+  </p>
+  <demo-source data-files="app/hooks/use-memo/page.jsx"></demo-source>
+
+  <h3>3.8 useContext</h3>
+  <p>
+    Context shares values through the component tree without passing props through every level.
+    Create the context, provide a value, then consume it.
+  </p>
+  <demo-source data-files="app/hooks/use-context/ThemeContext.jsx,app/hooks/use-context/page.jsx"></demo-source>
+
+  <h3>3.9 useReducer</h3>
+  <p>
+    <code>useReducer</code> keeps related state transitions in one reducer function. It is helpful
+    when many actions update the same state object.
+  </p>
+  <demo-source data-files="app/hooks/use-reducer/page.jsx"></demo-source>
+
+  <h2>Chapter 4 - Next.js Essentials</h2>
+  <p>
+    This project uses the App Router. Folders under <code>app/</code> become routes when they
+    contain a <code>page.jsx</code> file.
+  </p>
+
+  <h3>4.1 Routes in demo-project</h3>
+  <table>
+    <thead>
+      <tr><th>Route</th><th>File</th><th>Lesson</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>/</code></td><td><code>app/page.jsx</code></td><td>Lesson index</td></tr>
+      <tr><td><code>/creating-component</code></td><td><code>app/creating-component/page.jsx</code></td><td>Create a component</td></tr>
+      <tr><td><code>/using-components</code></td><td><code>app/using-components/page.jsx</code></td><td>Props and reuse</td></tr>
+      <tr><td><code>/fragments</code></td><td><code>app/fragments/page.jsx</code></td><td>Fragments</td></tr>
+      <tr><td><code>/jsx-syntax</code></td><td><code>app/jsx-syntax/page.jsx</code></td><td>JSX rules</td></tr>
+      <tr><td><code>/conditional-rendering</code></td><td><code>app/conditional-rendering/page.jsx</code></td><td>Conditional UI</td></tr>
+      <tr><td><code>/rendering-lists</code></td><td><code>app/rendering-lists/page.jsx</code></td><td>Lists and keys</td></tr>
+      <tr><td><code>/events</code></td><td><code>app/events/page.jsx</code></td><td>Event handlers</td></tr>
+      <tr><td><code>/hooks/use-state</code></td><td><code>app/hooks/use-state/page.jsx</code></td><td>State</td></tr>
+      <tr><td><code>/hooks/use-params/42</code></td><td><code>app/hooks/use-params/[id]/page.jsx</code></td><td>Dynamic params</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 Server and Client Components</h3>
+  <p>
+    Files are Server Components by default. Add <code>'use client'</code> at the top when the file
+    uses hooks, browser APIs, or event handlers.
+  </p>
+  <table>
+    <thead>
+      <tr><th>File type</th><th>In this project</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Server Component</td><td><code>layout.jsx</code>, simple static pages</td><td>No hook or browser-only logic needed</td></tr>
+      <tr><td>Client Component</td><td>Interactive lesson pages</td><td>Uses state, effects, events, router, params, refs, context, or reducer</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 next/link</h3>
+  <p>
+    <code>Link</code> navigates between routes without a full page reload. The project uses it in
+    the lesson index and shared header.
+  </p>
+  <demo-source data-files="app/page.jsx,components/PageHeader.jsx"></demo-source>
+
+  <h2>Chapter 5 - React Concepts in This Project</h2>
+
+  <h3>5.1 Props vs State</h3>
+  <table>
+    <thead>
+      <tr><th>Concept</th><th>Meaning</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Props</td><td>Read-only input from parent to child</td><td><code>ProfileBadge</code> receives <code>name</code>, <code>role</code>, and <code>status</code></td></tr>
+      <tr><td>State</td><td>Component-owned data that can change</td><td><code>useState</code> examples update counters, form values, and UI flags</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.2 Effects and Dependencies</h3>
+  <p>
+    Effects run after render. Use <code>[]</code> for mount-only work, use dependencies when the
+    effect should react to a value, and return a cleanup function for timers, subscriptions, or
+    listeners.
+  </p>
+
+  <h3>5.3 Derived Values</h3>
+  <p>
+    A derived value can be calculated from existing state or props. Keep it as a normal calculation
+    first. Reach for <code>useMemo</code> only when recalculation is expensive or reference stability
+    matters.
+  </p>
+
+  <h3>5.4 Shared State</h3>
+  <p>
+    For a small parent-child relationship, pass props. For app-wide values, use context. The theme
+    lesson shows the complete context pattern.
+  </p>
+
+  <h3>5.5 Reducer State</h3>
+  <p>
+    When state changes through named actions, a reducer is easier to reason about than many separate
+    setter calls. The reducer lesson keeps the action names and state changes together.
+  </p>
+
+  <h2>Chapter 6 - Interview Essentials</h2>
+
+  <h3>6.1 Quick Questions</h3>
+  <table>
+    <thead>
+      <tr><th>Question</th><th>Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>What is a React component?</td><td>A function that returns JSX and can be reused like a custom tag.</td></tr>
+      <tr><td>Why must component names start with a capital letter?</td><td>React treats lowercase JSX tags as built-in HTML elements.</td></tr>
+      <tr><td>Why use props?</td><td>Props let a parent configure a child component without duplicating the child code.</td></tr>
+      <tr><td>Why use state?</td><td>State stores data that changes over time and should update the UI.</td></tr>
+      <tr><td>Why use keys in lists?</td><td>Keys help React identify which list item changed, moved, or was removed.</td></tr>
+      <tr><td>What does <code>'use client'</code> do?</td><td>It marks a file as a Client Component so hooks, events, and browser APIs can run.</td></tr>
+      <tr><td>What is a dynamic route?</td><td>A folder like <code>[id]</code> creates a route segment whose value can be read with <code>useParams()</code>.</td></tr>
+      <tr><td>When should you use context?</td><td>When many components need the same value and passing props through every level becomes awkward.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.2 Explain This Project</h3>
+  <p class="note">
+    "I built a small Next.js App Router learning project. The home page links to focused examples
+    for components, props, fragments, JSX syntax, conditional rendering, lists, events, and common
+    hooks. Shared components keep repeated UI consistent, and each route demonstrates one concept
+    with runnable code."
+  </p>
+
+  <h2>Chapter 7 - Build Order</h2>
+
+  <h3>7.1 Step 1 - Create the App</h3>
+  <ol>
+    <li>Create <code>demo-project</code>.</li>
+    <li>Install <code>next</code>, <code>react</code>, and <code>react-dom</code>.</li>
+    <li>Add <code>package.json</code>, <code>next.config.js</code>, and <code>jsconfig.json</code>.</li>
+  </ol>
+
+  <h3>7.2 Step 2 - Add the Shared Shell</h3>
+  <ol>
+    <li>Create <code>app/layout.jsx</code>.</li>
+    <li>Create <code>app/globals.css</code>.</li>
+    <li>Create <code>components/PageHeader.jsx</code>.</li>
+    <li>Create <code>app/page.jsx</code> with links to each lesson route.</li>
+  </ol>
+
+  <h3>7.3 Step 3 - Add JSX and Events Lessons</h3>
+  <ol>
+    <li>Create <code>WelcomeCard</code> and <code>ProfileBadge</code>.</li>
+    <li>Add pages for components, props, fragments, JSX syntax, conditional rendering, lists, and events.</li>
+    <li>Run the app and click each route from the home page.</li>
+  </ol>
+
+  <h3>7.4 Step 4 - Add Hooks Lessons</h3>
+  <ol>
+    <li>Add one route per hook under <code>app/hooks/</code>.</li>
+    <li>Use <code>'use client'</code> on interactive hook examples.</li>
+    <li>Test router navigation and dynamic params separately.</li>
+  </ol>
+
+  <h3>7.5 Step 5 - Keep the Project Honest</h3>
+  <p>
+    When a lesson page changes, update the actual <code>demo-project</code> file first. The ebook
+    snippets should point to that file, so students see the same code they are asked to build.
+  </p>
+
+  <h2>Chapter 8 - Verification Checklist</h2>
+
+  <h3>8.1 Run Checks</h3>
+  <pre><code>cd demo-project
+npm run build
+npm run dev</code></pre>
+
+  <h3>8.2 Manual Route Check</h3>
+  <ol>
+    <li>Open <code>http://localhost:3000</code>.</li>
+    <li>Click every lesson link on the home page.</li>
+    <li>Use every button, input, and route link in the examples.</li>
+    <li>Confirm there are no console errors.</li>
+  </ol>
+
+  <h3>8.3 Final Student Checklist</h3>
+  <table>
+    <thead>
+      <tr><th>Can you explain?</th><th>Where to look</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>How a route is created</td><td><code>app/**/page.jsx</code></td></tr>
+      <tr><td>How a component is created</td><td><code>components/WelcomeCard.jsx</code></td></tr>
+      <tr><td>How props work</td><td><code>components/ProfileBadge.jsx</code></td></tr>
+      <tr><td>How state changes UI</td><td><code>app/hooks/use-state/page.jsx</code></td></tr>
+      <tr><td>How effects run</td><td><code>app/hooks/use-effect/page.jsx</code></td></tr>
+      <tr><td>How dynamic params work</td><td><code>app/hooks/use-params/[id]/page.jsx</code></td></tr>
+      <tr><td>How context shares values</td><td><code>app/hooks/use-context/ThemeContext.jsx</code></td></tr>
+      <tr><td>How reducer actions update state</td><td><code>app/hooks/use-reducer/page.jsx</code></td></tr>
+    </tbody>
+  </table>
 </body>
 </html>
