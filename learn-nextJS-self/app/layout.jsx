@@ -1,4 +1,5 @@
 import './globals.css';
+import './userapp.css';
 
 export const metadata = {
   title: 'Learn React & Next.js From Scratch',

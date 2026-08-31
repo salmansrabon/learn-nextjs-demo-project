@@ -34,8 +34,22 @@ function encodeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function renderDemoSource(files) {
-  const sourceRoot = path.resolve(process.cwd(), '..', 'demo-project');
+// Book snippets come from three roots: the sibling demo-project (default, used
+// by chapters 1-3), this project itself (chapter 4's lesson code), and the
+// sibling user-demo-site (chapter 4's "finished app" section).
+const SOURCE_ROOTS = {
+  'demo-project': path.resolve(process.cwd(), '..', 'demo-project'),
+  self: process.cwd(),
+  'user-demo-site': path.resolve(process.cwd(), '..', 'user-demo-site'),
+};
+
+function renderDemoSource(files, root) {
+  const sourceRoot = SOURCE_ROOTS[root];
+
+  if (!sourceRoot) {
+    throw new Error(`Unknown demo-source root: ${root}`);
+  }
+
   const sourceRootWithSeparator = `${sourceRoot}${path.sep}`;
 
   const code = files
@@ -46,7 +60,7 @@ function renderDemoSource(files) {
       const filePath = path.resolve(sourceRoot, file);
 
       if (!filePath.startsWith(sourceRootWithSeparator)) {
-        throw new Error(`Invalid demo-project source path: ${file}`);
+        throw new Error(`Invalid ${root} source path: ${file}`);
       }
 
       const source = fs.readFileSync(filePath, 'utf-8').trimEnd();
@@ -57,10 +71,12 @@ function renderDemoSource(files) {
   return `<pre><code>${code}</code></pre>`;
 }
 
+// Accepts <demo-source data-files="a,b"> (reads demo-project) and the explicit
+// <demo-source data-root="self|user-demo-site" data-files="a,b"> form.
 function expandDemoSources(content) {
   return content.replace(
-    /<demo-source\s+data-files="([^"]+)"\s*><\/demo-source>/gi,
-    (match, files) => renderDemoSource(files)
+    /<demo-source(?:\s+data-root="([^"]*)")?\s+data-files="([^"]+)"\s*><\/demo-source>/gi,
+    (match, root, files) => renderDemoSource(files, root || 'demo-project')
   );
 }
 

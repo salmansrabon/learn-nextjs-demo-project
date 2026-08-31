@@ -1,8 +1,29 @@
-demo-project/.next
-demo-project/node_modules
-demo-project/.env
-learn-nextjs/.next
-learn-nextjs-self/node_modules
-learn-nextjs-self/.env
-learn-nextjs-self/.vercel
-learn-nextjs-self/.playwright-mcp
+# Dependencies and build output — matched at any depth, so a new project
+# folder added later is covered without editing this file.
+node_modules/
+.next/
+out/
+build/
+
+# Secrets. `.env` alone does NOT match `.env.local`, which is why the
+# previous version leaked it — `.env*` covers every variant.
+.env
+.env.*
+
+# ...except the templates, which are meant to be committed. The book tells
+# students to copy backend/.env.example to backend/.env.
+!.env.example
+!.env*.example
+
+# Tooling
+.vercel/
+.playwright-mcp/
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

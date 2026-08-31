@@ -24,3 +24,17 @@ export function readDemoSource(...relativePaths) {
     })
     .join('\n\n');
 }
+
+// Same idea, pointed at the sibling user-demo-site project. Used only by
+// section 4.16, which compares the app you built with the reference
+// implementation it was modelled on.
+export function readUserDemoSource(...relativePaths) {
+  const root = path.resolve(process.cwd(), '..', 'user-demo-site');
+
+  return relativePaths
+    .map((rel) => {
+      const contents = fs.readFileSync(path.join(root, rel), 'utf-8').trimEnd();
+      return `// ${rel}\n${contents}`;
+    })
+    .join('\n\n');
+}

@@ -1,33 +1,44 @@
 'use client';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import PageHeader from '@/components/PageHeader';
 
 export default function UseRefPage() {
-  const inputRef = useRef(null);
-  const renderCount = useRef(0);
-  const [, forceRerender] = useState(0);
+  // The ref starts as null and React fills it with the real <input> DOM
+  // node once the element is on screen.
+  const emailRef = useRef(null);
 
-  useEffect(() => {
-    inputRef.current.focus(); // use case 1: DOM access — auto-focus on mount
-  }, []);
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
 
-  // use case 2: a mutable value that survives renders without causing one.
-  // Mutated inside an effect (not directly in the render body) to avoid a
-  // server/client hydration mismatch.
-  useEffect(() => {
-    renderCount.current += 1;
-  });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      setMessage('Email is required');
+      emailRef.current.focus(); // put the cursor back on the problem
+      return;
+    }
+
+    setMessage(`Submitted: ${email}`);
+  };
 
   return (
     <>
       <PageHeader
-        title="useRef — DOM Access & Silent Values"
-        description="Changing ref.current does not re-render the component — unlike useState."
+        title="useRef — Focusing an Input"
+        description="Submit with the email box empty and the ref puts the cursor back in it."
       />
       <div className="demo">
-        <input ref={inputRef} placeholder="Auto-focused on mount" />
-        <p>This component has rendered {renderCount.current} time(s).</p>
-        <button onClick={() => forceRerender((t) => t + 1)}>Force a re-render</button>
+        <form onSubmit={handleSubmit}>
+          <input
+            ref={emailRef}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+          />
+          <button type="submit">Submit</button>
+        </form>
+        {message && <p className="note">{message}</p>}
       </div>
     </>
   );

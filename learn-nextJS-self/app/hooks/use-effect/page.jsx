@@ -9,14 +9,26 @@ export default function UseEffectPage() {
   return (
     <>
       <PageHeader
-        title="useEffect — Dependencies & Lifecycle"
-        description="[] = run once on mount. [count] = mount + every time count changes. The returned function runs on unmount."
+        title="useEffect — Fetching Data After Render"
+        description="The effect calls a GET API once, after the first render, and stores the response in state."
       />
       <Theory>
+        <h3>Why data loading lives in an effect</h3>
+        <p>
+          A component body must be predictable: given the same props and state it returns the same
+          JSX, and it may run more than once. A network request is the opposite — it takes time, it
+          can fail, and it must happen <em>once</em>, not on every render. So the request goes in{' '}
+          <code>useEffect</code>, which React runs <em>after</em> the render is on screen, and the
+          response is stored in <code>useState</code> so the arrival of data triggers a re-render.
+        </p>
+        <p>
+          The example calls <code>https://jsonplaceholder.typicode.com/users</code>, a free public
+          read-only API. No key, no login, nothing to install.
+        </p>
+
         <h3>The dependency array</h3>
         <p>
-          <code>useEffect</code> runs a side effect <em>after</em> render. Its second argument — the
-          dependency array — controls exactly when it re-runs:
+          The second argument to <code>useEffect</code> controls when it runs again:
         </p>
         <table>
           <thead>
@@ -31,21 +43,39 @@ export default function UseEffectPage() {
               <td>Once, right after the component first mounts</td>
             </tr>
             <tr>
-              <td><code>[count]</code></td>
-              <td>On mount, then again every time <code>count</code> changes</td>
+              <td><code>[value]</code></td>
+              <td>On mount, then again every time <code>value</code> changes</td>
             </tr>
             <tr>
               <td>no array</td>
-              <td>After <em>every</em> render — almost always a bug; avoid it</td>
+              <td>After <em>every</em> render — almost always a bug</td>
             </tr>
           </tbody>
         </table>
-        <h3>Three lifecycle phases</h3>
-        <ul>
-          <li><strong>Mounting</strong> — the component is created and shown for the first time. Good place for: fetching data, checking auth. <code>useEffect(fn, [])</code></li>
-          <li><strong>Updating</strong> — a watched value changed and the component re-rendered. <code>useEffect(fn, [value])</code></li>
-          <li><strong>Unmounting</strong> — the component is removed. The <strong>function returned</strong> from the effect is the cleanup — React calls it automatically to stop timers or listeners and prevent memory leaks.</li>
-        </ul>
+        <p className="note">
+          The last row matters here. Without <code>[]</code>, the response would call{' '}
+          <code>setUsers</code>, the state change would re-render, the re-render would run the
+          effect, and the component would fetch forever.
+        </p>
+
+        <h3>Cleanup</h3>
+        <p>
+          The function an effect <strong>returns</strong> is its cleanup, and React runs it when the
+          component unmounts or before the effect runs again. It is what stops timers, closes
+          subscriptions, and removes event listeners.
+        </p>
+        <p>
+          This example returns nothing, because a single fetch on mount has nothing to tear down.
+          You will see a real cleanup in chapter 4, where a request that is still in flight has to
+          be ignored if the component goes away before it lands.
+        </p>
+
+        <h3>What is deliberately missing</h3>
+        <p>
+          A real request also needs a loading state and an error state — this one shows an empty
+          list until the data arrives, and nothing at all if the request fails. That is fine for
+          learning the hook itself, and section 4.2 adds both properly.
+        </p>
       </Theory>
       <CodePanel label="Source" code={readDemoSource('app/hooks/use-effect/page.jsx')} />
       <LivePreview>

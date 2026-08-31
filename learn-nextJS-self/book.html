@@ -8,14 +8,15 @@
 <body>
   <h1>Learn Next.js with demo-project</h1>
   <p>
-    This ebook follows one project only: <code>demo-project</code>. Every chapter explains how to
-    build the existing files in that project, and every source snippet below is read directly from
-    <code>demo-project</code>.
+    This ebook is built in two halves. Chapters 1 to 3 teach the foundations against
+    <code>demo-project</code> - components, JSX, events, and hooks - and every snippet in those
+    chapters is read directly from that project's real files.
   </p>
   <p>
-    The goal is foundation: students should understand what Next.js is, how this project is
-    structured, and how React concepts such as components, JSX, events, lifecycle, and hooks work in
-    a running app. Larger application features belong to a separate project later.
+    Chapter 4 then puts the foundations to work. You build the frontend of
+    <code>user-demo-site</code> one sub-topic at a time: fetch a public API, then register, log in,
+    list users, search, update, and delete against a real Express backend. Chapter 5 collects the
+    questions an interviewer is likely to ask about all of it.
   </p>
 
   <!-- ============ TOC ============ -->
@@ -25,11 +26,8 @@
       <li>Demo Project Overview</li>
       <li>React JSX Syntax and Events</li>
       <li>Component Lifecycle and Hooks</li>
-      <li>Next.js Essentials</li>
-      <li>React Concepts in This Project</li>
-      <li>Interview Essentials</li>
-      <li>Build Order</li>
-      <li>Verification Checklist</li>
+      <li>Frontend Development - user-demo-site</li>
+      <li>Common Interview Questions</li>
     </ol>
   </div>
 
@@ -50,7 +48,7 @@
       <tr><td>JSX syntax</td><td>One root element, <code>className</code>, expressions inside braces, self-closing tags, and fragments</td></tr>
       <tr><td>Events</td><td>Click, input, and submit handlers that update UI state</td></tr>
       <tr><td>Lifecycle</td><td>Mounting, updating, cleanup, and dependency arrays through <code>useEffect</code></td></tr>
-      <tr><td>Hooks</td><td><code>useState</code>, <code>useEffect</code>, <code>useRouter</code>, <code>useParams</code>, <code>useRef</code>, <code>useCallback</code>, <code>useMemo</code>, <code>useContext</code>, and <code>useReducer</code></td></tr>
+      <tr><td>Hooks</td><td><code>useState</code>, <code>useEffect</code>, <code>useRouter</code>, <code>useParams</code>, and <code>useRef</code> - the five a real app actually needs. Chapter 5 covers the optimisation hooks at interview level.</td></tr>
     </tbody>
   </table>
 
@@ -68,7 +66,7 @@
       <tr><td>How do we build UI?</td><td>With components that return JSX</td><td>Those components live inside route files such as <code>app/page.jsx</code></td></tr>
       <tr><td>How do we create pages?</td><td>React itself does not define file-based routes</td><td>A folder with <code>page.jsx</code> becomes a route</td></tr>
       <tr><td>How do we share a page shell?</td><td>React can compose children</td><td><code>app/layout.jsx</code> wraps the route tree</td></tr>
-      <tr><td>How do we handle browser interaction?</td><td>Use state, effects, refs, context, reducers, and event handlers</td><td>Add <code>'use client'</code> when a route needs those browser-side features</td></tr>
+      <tr><td>How do we handle browser interaction?</td><td>Use state, effects, refs, and event handlers</td><td>Add <code>'use client'</code> when a route needs those browser-side features</td></tr>
     </tbody>
   </table>
 
@@ -93,12 +91,7 @@
 |       |-- use-router/destination/page.jsx
 |       |-- use-params/page.jsx
 |       |-- use-params/[id]/page.jsx
-|       |-- use-ref/page.jsx
-|       |-- use-callback/page.jsx
-|       |-- use-memo/page.jsx
-|       |-- use-context/ThemeContext.jsx
-|       |-- use-context/page.jsx
-|       `-- use-reducer/page.jsx
+|       `-- use-ref/page.jsx
 |-- components/
 |   |-- PageHeader.jsx
 |   |-- WelcomeCard.jsx
@@ -174,6 +167,60 @@ export default function HomePage() {
   </p>
   <demo-source data-files="app/page.jsx"></demo-source>
 
+  <h3>1.6 The Three Projects in This Repository</h3>
+  <p>
+    Chapters 1 to 3 need only <code>demo-project</code>. Chapter 4 brings in two more. Knowing which
+    is which saves confusion later.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Folder</th><th>What it is</th><th>Used by</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>demo-project</code></td>
+        <td>The lesson reference app. Every code panel in chapters 1 to 3 reads its real files.</td>
+        <td>Chapters 1 - 3</td>
+      </tr>
+      <tr>
+        <td><code>learn-nextJS-self</code></td>
+        <td>This book, plus the chapter 4 lessons you will build under <code>app/project/</code>.</td>
+        <td>All chapters</td>
+      </tr>
+      <tr>
+        <td><code>user-demo-site</code></td>
+        <td>An Express + MySQL backend with JWT auth, and a finished Next.js frontend built against it.</td>
+        <td>Chapter 4</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    In chapter 4 you use <code>user-demo-site/backend</code> as a running server and never edit it.
+    Its <code>frontend</code> folder is the finished version of what you are building - worth reading
+    at 4.16, and worth not reading before then.
+  </p>
+  <pre><code>learn-nextjs/
+|-- demo-project/          chapters 1-3 reference app
+|-- learn-nextJS-self/     this book
+|   |-- book.html          the chapter text you are reading
+|   |-- app/project/       the chapter 4 lessons
+|   |-- app/register/      \
+|   |-- app/login/          |
+|   |-- app/profile/        |  the app chapter 4 builds,
+|   |-- app/users/          |  live at these routes
+|   |-- components/         |
+|   |-- services/           |
+|   |-- lib/                |
+|   `-- utils/             /
+`-- user-demo-site/
+    |-- backend/           Express + Sequelize + MySQL, port 5000
+    `-- frontend/          the same app built independently, read at 4.16</code></pre>
+  <p class="note">
+    Chapter 4 builds its app inside this project, at the same paths it tells you to use. So every
+    file it asks you to create already exists here to compare against, and every lesson reads its
+    code straight off disk rather than from a copy that can drift.
+  </p>
+
   <h2>Chapter 2 - React JSX Syntax and Events</h2>
   <p>
     These lessons build the basic React mental model: a component is a function, JSX is the markup
@@ -243,7 +290,14 @@ export default function HomePage() {
   <h2>Chapter 3 - Component Lifecycle and Hooks</h2>
   <p>
     Hooks let function components remember values, run side effects, navigate, read route params,
-    access DOM nodes, memoize work, share context, and manage related state.
+    and reach DOM nodes directly. These five are the ones the application in chapter 4 actually
+    uses, so learn them properly before reaching for anything else.
+  </p>
+  <p class="note">
+    React has more hooks than these - <code>useContext</code>, <code>useReducer</code>,
+    <code>useMemo</code> and <code>useCallback</code> among them. They solve problems you have not
+    met yet: sharing state across a deep tree, and avoiding work that is not yet slow enough to be
+    worth avoiding. Chapter 5 covers what they do, which is what an interviewer will ask.
   </p>
 
   <h3>3.1 useState</h3>
@@ -251,12 +305,22 @@ export default function HomePage() {
     <code>useState</code> stores data that affects rendering. Calling the setter schedules a
     re-render with the new value.
   </p>
+  <p>
+    <strong>Real-life use:</strong> Use it for a controlled form field, a shopping-cart count, a
+    show/hide menu, or a loading and error message that must change on screen after the user acts.
+  </p>
   <demo-source data-files="app/hooks/use-state/page.jsx"></demo-source>
 
   <h3>3.2 useEffect</h3>
   <p>
     <code>useEffect</code> runs side effects after render. The dependency array controls when the
-    effect runs again.
+    effect runs again, and the function it returns is the cleanup.
+  </p>
+  <p>
+    <strong>Real-life use:</strong> Use it to load a user after a page opens, subscribe to a
+    WebSocket, update the document title, or add a browser event listener and remove it during
+    cleanup. Chapter 4 keeps this exact shape for every page it builds and only swaps
+    <code>fetch</code> for <code>axios</code>.
   </p>
   <demo-source data-files="app/hooks/use-effect/page.jsx"></demo-source>
 
@@ -265,12 +329,22 @@ export default function HomePage() {
     <code>useRouter</code> from <code>next/navigation</code> performs programmatic navigation from a
     Client Component.
   </p>
+  <p>
+    <strong>Real-life use:</strong> Use it after a successful login to send someone to their
+    dashboard, after saving a form to return to the list, or to go back when a modal-like detail
+    page is closed.
+  </p>
   <demo-source data-files="app/hooks/use-router/page.jsx,app/hooks/use-router/destination/page.jsx"></demo-source>
 
   <h3>3.4 useParams</h3>
   <p>
     Dynamic route folders such as <code>[id]</code> create URL params. <code>useParams()</code>
     reads those values in a Client Component.
+  </p>
+  <p>
+    <strong>Real-life use:</strong> Use it on a product page such as <code>/products/42</code>, a
+    profile such as <code>/users/maya</code>, or an order page where the URL identifies which record
+    the component should load.
   </p>
   <demo-source data-files="app/hooks/use-params/page.jsx,app/hooks/use-params/[id]/page.jsx"></demo-source>
 
@@ -279,224 +353,606 @@ export default function HomePage() {
     <code>useRef</code> can point to a DOM element or hold a mutable value that does not trigger a
     re-render when it changes.
   </p>
+  <p>
+    <strong>Real-life use:</strong> Use it to focus the first invalid input, play or pause a video,
+    remember the previous value, or keep an interval ID so cleanup can cancel it without updating
+    the UI.
+  </p>
   <demo-source data-files="app/hooks/use-ref/page.jsx"></demo-source>
 
-  <h3>3.6 useCallback</h3>
+  <h2>Chapter 4 - Frontend Development with user-demo-site</h2>
   <p>
-    <code>useCallback</code> memoizes a function reference. It is most useful when passing callbacks
-    to memoized child components.
+    Chapters 1 to 3 taught React with almost no network in it. Section 3.2 called one public
+    read-only endpoint with <code>fetch</code>; nothing was ever saved, no request needed a login,
+    and no failure had consequences. This chapter builds a real application against
+    <code>user-demo-site/backend</code>, a running Express API with JWT authentication and two
+    roles.
   </p>
-  <demo-source data-files="app/hooks/use-callback/page.jsx"></demo-source>
-
-  <h3>3.7 useMemo</h3>
   <p>
-    <code>useMemo</code> memoizes a calculated value. Use it for expensive calculations or derived
-    values that should only recompute when dependencies change.
+    The backend already exists and you will not change it. You are building the frontend, one file
+    at a time. <strong>Every file is created by a numbered section before anything imports it</strong>,
+    so you can follow this chapter top to bottom without ever hitting a missing module.
   </p>
-  <demo-source data-files="app/hooks/use-memo/page.jsx"></demo-source>
-
-  <h3>3.8 useContext</h3>
   <p>
-    Context shares values through the component tree without passing props through every level.
-    Create the context, provide a value, then consume it.
-  </p>
-  <demo-source data-files="app/hooks/use-context/ThemeContext.jsx,app/hooks/use-context/page.jsx"></demo-source>
-
-  <h3>3.9 useReducer</h3>
-  <p>
-    <code>useReducer</code> keeps related state transitions in one reducer function. It is helpful
-    when many actions update the same state object.
-  </p>
-  <demo-source data-files="app/hooks/use-reducer/page.jsx"></demo-source>
-
-  <h2>Chapter 4 - Next.js Essentials</h2>
-  <p>
-    This project uses the App Router. Folders under <code>app/</code> become routes when they
-    contain a <code>page.jsx</code> file.
+    Each section has a live page in this project. All sixteen are listed at
+    <a href="/project">/project</a>, and the finished app is live too:
+    <a href="/register">/register</a>, <a href="/login">/login</a>,
+    <a href="/users">/users</a>, <a href="/profile">/profile</a>.
   </p>
 
-  <h3>4.1 Routes in demo-project</h3>
-  <table>
-    <thead>
-      <tr><th>Route</th><th>File</th><th>Lesson</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><code>/</code></td><td><code>app/page.jsx</code></td><td>Lesson index</td></tr>
-      <tr><td><code>/creating-component</code></td><td><code>app/creating-component/page.jsx</code></td><td>Create a component</td></tr>
-      <tr><td><code>/using-components</code></td><td><code>app/using-components/page.jsx</code></td><td>Props and reuse</td></tr>
-      <tr><td><code>/fragments</code></td><td><code>app/fragments/page.jsx</code></td><td>Fragments</td></tr>
-      <tr><td><code>/jsx-syntax</code></td><td><code>app/jsx-syntax/page.jsx</code></td><td>JSX rules</td></tr>
-      <tr><td><code>/conditional-rendering</code></td><td><code>app/conditional-rendering/page.jsx</code></td><td>Conditional UI</td></tr>
-      <tr><td><code>/rendering-lists</code></td><td><code>app/rendering-lists/page.jsx</code></td><td>Lists and keys</td></tr>
-      <tr><td><code>/events</code></td><td><code>app/events/page.jsx</code></td><td>Event handlers</td></tr>
-      <tr><td><code>/hooks/use-state</code></td><td><code>app/hooks/use-state/page.jsx</code></td><td>State</td></tr>
-      <tr><td><code>/hooks/use-params/42</code></td><td><code>app/hooks/use-params/[id]/page.jsx</code></td><td>Dynamic params</td></tr>
-    </tbody>
-  </table>
-
-  <h3>4.2 Server and Client Components</h3>
+  <h3>4.0 What you are building</h3>
   <p>
-    Files are Server Components by default. Add <code>'use client'</code> at the top when the file
-    uses hooks, browser APIs, or event handlers.
+    One application, two experiences. An administrator manages everybody; a normal user sees only
+    themselves.
   </p>
   <table>
     <thead>
-      <tr><th>File type</th><th>In this project</th><th>Reason</th></tr>
+      <tr><th></th><th>admin</th><th>user</th></tr>
     </thead>
     <tbody>
-      <tr><td>Server Component</td><td><code>layout.jsx</code>, simple static pages</td><td>No hook or browser-only logic needed</td></tr>
-      <tr><td>Client Component</td><td>Interactive lesson pages</td><td>Uses state, effects, events, router, params, refs, context, or reducer</td></tr>
+      <tr><td>Lands after login on</td><td><code>/users</code></td><td><code>/profile</code></td></tr>
+      <tr><td>List, search and page through every user</td><td>yes</td><td>no - 403</td></tr>
+      <tr><td>View, update and delete any user</td><td>yes</td><td>no - 403</td></tr>
+      <tr><td>See their own record</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Change their own photo</td><td>yes</td><td>yes</td></tr>
+      <tr><td>Change their own name or email</td><td>via the admin pages</td><td>no - see 4.15</td></tr>
     </tbody>
   </table>
-
-  <h3>4.3 next/link</h3>
-  <p>
-    <code>Link</code> navigates between routes without a full page reload. The project uses it in
-    the lesson index and shared header.
+  <pre><code>your-app/
+|-- app/
+|   |-- register/page.jsx           4.7   sign up
+|   |-- login/page.jsx              4.8   sign in
+|   |-- profile/page.jsx            4.15  a user's own profile
+|   `-- users/
+|       |-- page.jsx                4.10  admin: list, search, delete
+|       `-- [id]/
+|           |-- page.jsx            4.12  admin: view one user
+|           `-- edit/page.jsx       4.13  admin: update a user
+|-- components/
+|   |-- Message.jsx                 4.6   error / success box
+|   |-- Field.jsx                   4.6   labelled input
+|   |-- Navbar.jsx                  4.9   role-based menu
+|   `-- UserTable.jsx               4.10  the table
+|-- services/
+|   |-- api.js                      4.5   the axios client
+|   |-- authService.js              4.5   register, login, me
+|   `-- userService.js              4.5   user CRUD
+|-- lib/
+|   |-- apiConfig.js                4.4   where the backend lives
+|   `-- session.js                  4.8   token + user in localStorage
+`-- utils/
+    `-- validation.js               4.7   form checks</code></pre>
+  <p class="warn">
+    Every "no" in that table is enforced by the server, not by the menu. Hiding a link stops an
+    honest user wandering somewhere useless; it stops nobody else. Section 4.15 shows how to prove
+    that to yourself in thirty seconds.
   </p>
-  <demo-source data-files="app/page.jsx,components/PageHeader.jsx"></demo-source>
 
-  <h2>Chapter 5 - React Concepts in This Project</h2>
+  <h3>4.1 Calling a GET API and rendering it</h3>
+  <p>
+    Practice first, in a throwaway page at <code>app/practice/page.jsx</code>. No backend needed.
+    Every data-loading page in this chapter is the same three pieces: state to hold the response,
+    an effect to start the request, and a render that maps over the state.
+  </p>
+  <p>
+    <code>&#39;use client&#39;</code> appears here for the first time. Files under <code>app/</code>
+    are Server Components by default, and a Server Component has no <code>useState</code>, no
+    <code>useEffect</code> and no event handlers, because no browser is involved. Every page you
+    write in this chapter needs all three, so every one of them is a Client Component.
+  </p>
+  <p>
+    The effect ends in <code>[]</code> for a reason. With no dependency array an effect runs after
+    every render, and calling the setter causes a render, so the component would fetch forever.
+  </p>
+  <p><a href="/project/fetch-get">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="app/project/fetch-get/Demo.jsx"></demo-source>
 
-  <h3>5.1 Props vs State</h3>
+  <h3>4.2 Loading and error states</h3>
+  <p>
+    A request has three outcomes and the UI must show all three: waiting, failed, or here is the
+    data. Section 4.1 rendered only the third, which is why its list flashed empty first.
+  </p>
+  <p>
+    The trap worth memorising: <code>fetch()</code> does <strong>not</strong> throw on 404 or 500.
+    It rejects only when the request never completed at all. A 404 arrives as a perfectly
+    successful promise with <code>res.ok === false</code>, so you must check it and throw yourself.
+    <code>finally</code> then guarantees the loading flag clears on both paths.
+  </p>
+  <p>
+    This is one of the main reasons the app switches to axios in 4.5, which rejects on any non-2xx
+    by itself.
+  </p>
+  <p><a href="/project/loading-error">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="app/project/loading-error/Demo.jsx"></demo-source>
+
+  <h3>4.3 Running the backend</h3>
+  <p>Delete the practice page. The real app starts here. Set the server up once:</p>
+  <ol>
+    <li>Create an empty MySQL database named <code>miniapp1</code>. No tables needed - Sequelize creates them on first run.</li>
+    <li>Copy <code>backend/.env.example</code> to <code>backend/.env</code> and set <code>DB_PASSWORD</code>.</li>
+    <li><code>cd user-demo-site/backend &amp;&amp; npm install</code></li>
+    <li><code>npm run seed</code> - creates the admin account <code>admin@test.com</code>.</li>
+    <li><code>npm run dev</code> - starts on port <strong>5000</strong>.</li>
+  </ol>
+  <p>
+    The backend runs on 5000 and your app on 3000, so both can stay up in separate terminals.
+    <code>GET /api/health</code> needs no token and touches no data - if it answers, the server is
+    fine and any later failure is in your code.
+  </p>
   <table>
     <thead>
-      <tr><th>Concept</th><th>Meaning</th><th>Example</th></tr>
+      <tr><th>Endpoint</th><th>Who can call it</th><th>Built in</th></tr>
     </thead>
     <tbody>
-      <tr><td>Props</td><td>Read-only input from parent to child</td><td><code>ProfileBadge</code> receives <code>name</code>, <code>role</code>, and <code>status</code></td></tr>
-      <tr><td>State</td><td>Component-owned data that can change</td><td><code>useState</code> examples update counters, form values, and UI flags</td></tr>
+      <tr><td><code>POST /api/auth/register</code></td><td>anyone</td><td>4.7</td></tr>
+      <tr><td><code>POST /api/auth/login</code></td><td>anyone</td><td>4.8</td></tr>
+      <tr><td><code>GET /api/auth/me</code></td><td>any logged-in user</td><td>4.15</td></tr>
+      <tr><td><code>GET /api/users</code></td><td>admin only</td><td>4.10</td></tr>
+      <tr><td><code>GET /api/users/:id</code></td><td>admin only</td><td>4.12</td></tr>
+      <tr><td><code>PUT /api/users/:id</code></td><td>admin only</td><td>4.13</td></tr>
+      <tr><td><code>DELETE /api/users/:id</code></td><td>admin only</td><td>4.14</td></tr>
+      <tr><td><code>PUT /api/users/profile/photo</code></td><td>any logged-in user, own photo</td><td>4.15</td></tr>
     </tbody>
   </table>
-
-  <h3>5.2 Effects and Dependencies</h3>
   <p>
-    Effects run after render. Use <code>[]</code> for mount-only work, use dependencies when the
-    effect should react to a value, and return a cleanup function for timers, subscriptions, or
-    listeners.
+    Every response has the same shape, <code>{ success, message, data }</code>, which is why a
+    single expression - <code>err.response?.data?.message</code> - surfaces any error in the whole
+    app.
+  </p>
+  <p><a href="/project/backend-setup">Open the live lesson &rarr;</a></p>
+
+  <h3>4.4 The first file, and the environment variable</h3>
+  <p>
+    <code>lib/apiConfig.js</code> holds the backend URL so that moving the API means editing one
+    line. Add <code>.env.local</code> at the root of your project with a single line:
+  </p>
+  <pre><code>NEXT_PUBLIC_API_URL=http://localhost:5000</code></pre>
+  <p>
+    The <code>NEXT_PUBLIC_</code> prefix is not decoration. Without it the value is server-only and
+    reads as <code>undefined</code> inside every Client Component in this chapter. Next.js loads
+    <code>.env.local</code> at startup, so restart the dev server after creating it.
+  </p>
+  <p><a href="/project/app-structure">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="lib/apiConfig.js"></demo-source>
+
+  <h3>4.5 The axios client and the services layer</h3>
+  <p>
+    You wrote two <code>fetch</code> calls in 4.1 and 4.2, so this comparison is not abstract:
+  </p>
+  <table>
+    <thead>
+      <tr><th></th><th>fetch</th><th>axios</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Reading the body</td><td><code>await res.json()</code></td><td><code>res.data</code>, already parsed</td></tr>
+      <tr><td>404 and 500</td><td>Resolves - you must remember <code>res.ok</code></td><td>Rejects, so <code>catch</code> runs</td></tr>
+      <tr><td>Query params</td><td>Build the string yourself</td><td>A <code>params</code> object, URL-encoded for you</td></tr>
+      <tr><td>The auth header</td><td>Written at every call site</td><td>One request interceptor</td></tr>
+    </tbody>
+  </table>
+  <p>
+    An interceptor is a function axios runs on every request, or every response, before your code
+    sees it. The request interceptor attaches <code>Authorization: Bearer &lt;token&gt;</code> to
+    everything - which is why no page in sections 4.10 to 4.14 ever mentions that header. The
+    response interceptor watches for <code>401</code> and clears the dead session once, centrally.
+  </p>
+  <p>
+    Both guard with <code>typeof window !== &#39;undefined&#39;</code>, because
+    <code>localStorage</code> does not exist while Next.js renders on the server. The response
+    interceptor still re-rejects the promise after cleaning up - swallow the error there and the
+    calling page waits on a spinner forever.
+  </p>
+  <p>
+    The three service files exist so that no page ever contains a URL. When an endpoint moves you
+    edit one line in one file, and the pages stay readable:
+    <code>getAllUsers({ page, limit: 5, search })</code> says what is happening.
+  </p>
+  <p><a href="/project/axios-client">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="services/api.js,services/authService.js,services/userService.js"></demo-source>
+
+  <h3>4.6 Two pieces every page needs</h3>
+  <p>
+    Every page from here shows errors and most contain a form. <code>Message</code> returns
+    <code>null</code> when it has no children, which is what keeps six pages free of
+    <code>{error &amp;&amp; &lt;div&gt;...&lt;/div&gt;}</code>. <code>Field</code> holds no state at
+    all - the parent owns the value and the error, which is what makes the inputs
+    <strong>controlled</strong> and what lets 4.13 prefill an edit form from the server.
+  </p>
+  <p><a href="/project/ui-pieces">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="components/Message.jsx,components/Field.jsx"></demo-source>
+
+  <h3>4.7 Registration</h3>
+  <p>
+    The first real page. Five fields share one state object and one handler keyed on
+    <code>e.target.name</code>; the square brackets in <code>[name]: value</code> are a computed
+    property, and spreading <code>...prev</code> first is what stops one field wiping the others.
+  </p>
+  <table>
+    <thead>
+      <tr><th>A POST needs</th><th>What breaks without it</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>e.preventDefault()</code></td><td>The form reloads the page and discards the request</td></tr>
+      <tr><td>Validation before the call</td><td>A wasted round trip, and the error appears far from the field</td></tr>
+      <tr><td><code>noValidate</code> on the form</td><td>The browser adds its own unstyleable bubbles alongside yours</td></tr>
+    </tbody>
+  </table>
+  <p class="warn">
+    Client validation is a convenience - it saves a round trip and puts the message beside the
+    field. It is not security. Delete it and the app is still safe; delete the server's and it is
+    not.
+  </p>
+  <p>
+    New accounts always get the role <code>user</code>. There is no way to sign up as an admin,
+    which is correct - the seeded <code>admin@test.com</code> is the only one, and 4.13 is where an
+    admin can promote somebody.
+  </p>
+  <p><a href="/project/register">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="utils/validation.js,app/register/page.jsx"></demo-source>
+
+  <h3>4.8 Login</h3>
+  <p>
+    The request is the easy half. What is new is the response: <code>data.data</code> holds a
+    <code>token</code> and a <code>user</code>, and everything after this depends on them.
+  </p>
+  <p>
+    A JWT is a signed string the server issues at login. Send it back later and the server knows who
+    you are without keeping a session. It is signed, not encrypted - anyone can read it, so it must
+    hold nothing secret - and it expires, which is why 4.5 handles 401 centrally.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Holds</th><th>Survives refresh?</th><th>Use for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>useState</code></td><td>No</td><td>form values, loading flags</td></tr>
+      <tr><td><code>localStorage</code></td><td>Yes</td><td>the token, the logged-in user</td></tr>
+    </tbody>
+  </table>
+  <p>
+    <code>localStorage</code> stores strings only, so the user object needs
+    <code>JSON.stringify</code> going in and <code>JSON.parse</code> coming out. Forget the parse
+    and every property reads as <code>undefined</code>, with no error to explain it -
+    <code>lib/session.js</code> exists so no page has to remember. Its reads guard with
+    <code>typeof window === &#39;undefined&#39;</code> because they can run during server rendering;
+    the write inside the submit handler needs no guard, because a click only ever happens in a
+    browser.
+  </p>
+  <p>
+    One line decides between <code>/users</code> and <code>/profile</code> based on
+    <code>user.role</code>. That branch is what makes the two roles feel like two applications.
+    <code>useRouter</code> comes from <code>next/navigation</code>, not <code>next/router</code> -
+    the latter is the Pages Router import and throws at runtime here.
+  </p>
+  <p><a href="/project/login">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="lib/session.js,app/login/page.jsx"></demo-source>
+
+  <h3>4.9 The navbar, and the hydration trap</h3>
+  <p>
+    Next.js renders your page twice: once on the server to produce HTML, then again in the browser.
+    React compares the two and throws a <strong>hydration mismatch</strong> if they differ. Since
+    <code>localStorage</code> does not exist on the server, a component that reads it while
+    rendering produces one menu on the server and a different one in the browser.
+  </p>
+  <p>Two rules fix it, and both appear in every guarded page after this one:</p>
+  <ul>
+    <li>Read <code>localStorage</code> inside <code>useEffect</code> - effects never run on the server.</li>
+    <li>Hold a <code>ready</code> flag starting <code>false</code>, so the server render and the browser's first paint are identical.</li>
+  </ul>
+  <p>
+    Use <code>&lt;Link&gt;</code> when the user chooses to navigate - it renders a real anchor, so
+    middle-click and "copy link address" work. Use <code>router.push()</code> when navigation is the
+    result of something happening, such as logging out.
+  </p>
+  <p class="warn">
+    The admin link is hidden from a normal user. That is a convenience, not a permission. Type
+    <code>/users</code> into the address bar as a normal user and the page loads - the server is
+    what answers the data request with 403.
+  </p>
+  <p><a href="/project/navbar">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="components/Navbar.jsx"></demo-source>
+
+  <h3>4.10 The admin user list</h3>
+  <p>
+    <code>app/users/page.jsx</code> is the largest file in the app because it does four things:
+    guards the route, lists users, searches them, and deletes them. Sections 4.11 and 4.14 return to
+    the same file for the last two.
+  </p>
+  <p>
+    The guard makes two checks in order - no token sends them to <code>/login</code>, a non-admin
+    token sends them to <code>/profile</code>. Both reads happen inside <code>useEffect</code>
+    behind a flag, for the reason 4.9 explained.
+  </p>
+  <p>
+    Nowhere in this page will you find <code>Authorization: Bearer</code>. The interceptor adds it.
+    And <code>UserTable</code> takes <em>callbacks</em>, not URLs - it renders rows and calls back,
+    so it can be dropped into any page without editing. The array is at
+    <code>result.data.users</code>: the envelope is <code>data</code>, and this endpoint's payload
+    has its own <code>users</code> key inside it.
+  </p>
+  <p>
+    Give the empty result its own branch. An empty list and a failed request look identical if you
+    only render the table, and a user who searched for a name that does not exist should not think
+    the app is broken.
+  </p>
+  <p><a href="/project/users-list">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="components/UserTable.jsx,app/users/page.jsx"></demo-source>
+
+  <h3>4.11 Searching and paging through users</h3>
+  <p>
+    Still the same file - nothing new to create. The search box needs <strong>two</strong> pieces of
+    state: the input's live value, and the submitted term the request actually uses. Collapse them
+    into one and typing "alice" fires five requests, four already stale on arrival. Debouncing is
+    the alternative, and the right answer for a search-as-you-type box.
+  </p>
+  <p>
+    The effect's dependency array is <code>[page, submittedSearch]</code>, so setting state is the
+    reload - there is no manual refetch call anywhere.
+  </p>
+  <p class="warn">
+    Submitting a search must also reset the page to 1. Without it, a user on page 3 who searches for
+    a name with two matches lands on page 3 of a two-row result, sees an empty table, and concludes
+    there are no matches. This is the most common bug in a paginated list.
+  </p>
+  <p>
+    Paging is done by the server: it returns one page of rows plus <code>totalPages</code> and
+    <code>total</code>, so the browser never holds the whole table. axios also URL-encodes the
+    params for you - a search for <code>a&amp;b</code> would otherwise end the parameter early.
+  </p>
+  <p><a href="/project/search-pagination">Open the live lesson &rarr;</a></p>
+
+  <h3>4.12 Viewing one user</h3>
+  <p>
+    A folder named <code>[id]</code> creates a dynamic segment, and <code>useParams()</code> reads
+    it.
+  </p>
+  <p class="warn">
+    The value is <strong>always a string</strong>. <code>id === 42</code> is <code>false</code>, and
+    <code>users.find((u) =&gt; u.id === id)</code> silently finds nothing - no error, no warning,
+    just an empty screen. Convert with <code>Number(id)</code> when comparing.
+  </p>
+  <p>
+    The page fetches by id rather than being handed the object during navigation, because a URL has
+    to work on its own: bookmarked, refreshed, or pasted to a colleague. And it separates its
+    failures - 401, 403, 404 and "the backend is not running" each deserve their own message,
+    because the server already told you which one happened.
+  </p>
+  <p><a href="/project/view-user">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="app/users/[id]/page.jsx"></demo-source>
+
+  <h3>4.13 Updating a user</h3>
+  <p>
+    Prefilling is the whole difference between a create form and an edit form: a GET must finish
+    before the form can render.
+  </p>
+  <p class="warn">
+    Never bind an input to <code>undefined</code> or <code>null</code>. React treats it as
+    <em>uncontrolled</em>, then switches it to controlled when the data arrives, and logs a warning
+    most people never read. The symptom is an input that ignores what you type. Start the form
+    object as <code>null</code> and render a loading state, then seed every field with
+    <code>?? &#39;&#39;</code> - the server stores a missing phone as <code>null</code>.
+  </p>
+  <p>
+    Keep <code>loading</code> (the GET) and <code>saving</code> (the PUT) as separate flags; they
+    mean different things to the user. The id goes in the URL because it identifies the resource,
+    the changed fields go in the body because they are the content, and the token goes in the header
+    courtesy of the interceptor. PUT replaces the resource, PATCH updates part of it.
+  </p>
+  <p>
+    The role dropdown is the interesting field: changing <code>user</code> to <code>admin</code> is
+    how a second administrator gets created, since registration always produces a normal user.
+  </p>
+  <p><a href="/project/update-user">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="app/users/[id]/edit/page.jsx"></demo-source>
+
+  <h3>4.14 Deleting a user</h3>
+  <p>
+    A DELETE carries no body - the id in the URL is the entire request, and the server answers with
+    <code>data: null</code> because there is no resource left to return.
+  </p>
+  <p>
+    Do not use <code>window.confirm</code>. It blocks the thread, cannot be styled, its wording
+    belongs to the browser, tests have to reach outside the page to dismiss it, and it cannot render
+    the user's name. A piece of state and two branches give you a confirmation that is part of your
+    app.
+  </p>
+  <p>
+    After a successful delete the local array is stale. Refetching costs one request and is always
+    right; removing the row locally is instant but wrong if the delete actually failed - and it
+    leaves the total count and the page count lying. This app refetches, and steps back a page when
+    the last row on a page disappears.
+  </p>
+  <p><a href="/project/delete-user">Open the live lesson &rarr;</a></p>
+
+  <h3>4.15 The normal user: their own profile, and nothing else</h3>
+  <p>
+    Log in with an account registered in 4.7 and the same application becomes one page showing one
+    record.
+  </p>
+  <p>
+    <code>GET /api/auth/me</code> takes no id. The server reads the token, finds the id inside it,
+    and returns that record - there is no parameter to tamper with. An endpoint that derives
+    identity from the token instead of from the request cannot be made to return the wrong person.
+    This page's guard therefore checks only for a token, not for a role: both kinds of user are
+    allowed here.
+  </p>
+  <p class="warn">
+    This backend gives a normal user no way to change their own name, email or phone. The only route
+    that updates those fields is <code>PUT /api/users/:id</code>, and it sits behind
+    <code>adminMiddleware</code> - a non-admin calling it gets 403 whether the call comes from your
+    form or from the console. So the profile page is read-only apart from the photo, and it says so.
+    Building an edit form here would produce a page that looks like it works and fails on submit for
+    every user who is not an admin. Self-service edits belong on the server: a
+    <code>PUT /api/auth/me</code> route that takes the id from the token, exactly as
+    <code>getMe</code> does.
+  </p>
+  <p>
+    The photo upload is the one request in the app that is not JSON - a file goes into a
+    <code>FormData</code> under the key <code>photo</code>, and the content type becomes
+    <code>multipart/form-data</code>.
+  </p>
+  <p>
+    Prove the boundary to yourself: as a normal user the Users link is absent; typing
+    <code>/users</code> anyway bounces you back via the guard; calling the endpoint from DevTools
+    returns <strong>403 Access denied. Admins only.</strong> The first two are your UI being
+    helpful. The third is the thing that actually protects the data.
+  </p>
+  <p><a href="/project/profile">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="self" data-files="app/profile/page.jsx"></demo-source>
+
+  <h3>4.16 The finished app</h3>
+  <p>
+    Six pages, four components and five helpers - a working application with two roles, real
+    authentication and full CRUD, where every restriction is enforced by the server and the UI only
+    reflects it.
+  </p>
+  <p>
+    <code>user-demo-site/frontend</code> is the same application built independently. None of the
+    differences are React: it uses Bootstrap instead of plain classes, mounts the admin pages at
+    <code>/admin/users</code>, splits <code>Message</code> into two components, reads localStorage
+    inline instead of through a helper, and uses <code>window.confirm</code>. Reading it should feel
+    like recognition, which is the real test of whether this chapter worked.
+  </p>
+  <p>
+    What you would add next: route protection in Next.js middleware so a guarded page never flashes,
+    a refresh-token flow so a 24-hour expiry does not silently log people out, a data-fetching
+    library to replace the loading and error state you hand-wrote six times, and the
+    <code>PUT /api/auth/me</code> route from 4.15.
+  </p>
+  <p><a href="/project/finished-app">Open the live lesson &rarr;</a></p>
+  <demo-source data-root="user-demo-site" data-files="frontend/services/api.js,frontend/app/admin/users/page.jsx"></demo-source>
+
+  <h2>Chapter 5 - Common Interview Questions</h2>
+  <p>
+    Everything below is answerable from the two projects in this book. Where a question maps to a
+    section, the section is named - if an answer does not feel solid, go back and run that lesson
+    rather than memorising the sentence.
+  </p>
+  <p class="note">
+    Interviewers rarely want the definition. They want the reason and the trade-off. &quot;A key
+    helps React identify list items&quot; is a memorised answer; &quot;without stable keys React
+    matches by position, so inserting at the top makes it reuse the wrong DOM nodes and input state
+    jumps rows&quot; is an understood one.
   </p>
 
-  <h3>5.3 Derived Values</h3>
-  <p>
-    A derived value can be calculated from existing state or props. Keep it as a normal calculation
-    first. Reach for <code>useMemo</code> only when recalculation is expensive or reference stability
-    matters.
-  </p>
-
-  <h3>5.4 Shared State</h3>
-  <p>
-    For a small parent-child relationship, pass props. For app-wide values, use context. The theme
-    lesson shows the complete context pattern.
-  </p>
-
-  <h3>5.5 Reducer State</h3>
-  <p>
-    When state changes through named actions, a reducer is easier to reason about than many separate
-    setter calls. The reducer lesson keeps the action names and state changes together.
-  </p>
-
-  <h2>Chapter 6 - Interview Essentials</h2>
-
-  <h3>6.1 Quick Questions</h3>
+  <h3>5.1 React Fundamentals</h3>
   <table>
     <thead>
       <tr><th>Question</th><th>Answer</th></tr>
     </thead>
     <tbody>
-      <tr><td>What is a React component?</td><td>A function that returns JSX and can be reused like a custom tag.</td></tr>
-      <tr><td>Why must component names start with a capital letter?</td><td>React treats lowercase JSX tags as built-in HTML elements.</td></tr>
-      <tr><td>Why use props?</td><td>Props let a parent configure a child component without duplicating the child code.</td></tr>
-      <tr><td>Why use state?</td><td>State stores data that changes over time and should update the UI.</td></tr>
-      <tr><td>Why use keys in lists?</td><td>Keys help React identify which list item changed, moved, or was removed.</td></tr>
-      <tr><td>What does <code>'use client'</code> do?</td><td>It marks a file as a Client Component so hooks, events, and browser APIs can run.</td></tr>
-      <tr><td>What is a dynamic route?</td><td>A folder like <code>[id]</code> creates a route segment whose value can be read with <code>useParams()</code>.</td></tr>
-      <tr><td>When should you use context?</td><td>When many components need the same value and passing props through every level becomes awkward.</td></tr>
+      <tr><td>What is a component?</td><td>A function that returns JSX and can be reused like a custom tag.</td></tr>
+      <tr><td>Why must component names start with a capital letter?</td><td>React treats lowercase JSX tags as built-in HTML elements, so <code>&lt;welcomeCard /&gt;</code> renders an unknown HTML tag instead of your component.</td></tr>
+      <tr><td>Props vs state?</td><td>Props are read-only input from a parent. State is data the component owns and can change. Props flow down; state stays put.</td></tr>
+      <tr><td>Why can a child not change its props?</td><td>Data flows one way. If a child could rewrite its input, no parent could reason about its own state. The parent passes a callback down instead.</td></tr>
+      <tr><td>Why do lists need keys?</td><td>Keys let React match items across renders. Without them it matches by position, so inserting at the top makes every row reuse the wrong DOM node and any typed input follows the wrong item.</td></tr>
+      <tr><td>Why not use the array index as a key?</td><td>It works only while the list never reorders, filters, or has items removed - which is exactly when keys matter.</td></tr>
+      <tr><td>What is a Fragment and why use one?</td><td><code>&lt;&gt;...&lt;/&gt;</code> groups siblings without adding a wrapper element, which matters when a stray <code>&lt;div&gt;</code> would break a table row or a flex layout.</td></tr>
+      <tr><td>Why <code>className</code> and not <code>class</code>?</td><td><code>class</code> is a reserved word in JavaScript. JSX compiles to JavaScript, so it uses <code>className</code>.</td></tr>
+      <tr><td>Controlled vs uncontrolled input?</td><td>Controlled means React state holds the value and an <code>onChange</code> updates it. Uncontrolled leaves the value in the DOM. Controlled is what lets you validate, prefill, disable and reset. (4.4)</td></tr>
+      <tr><td>Why does a form submit handler start with <code>e.preventDefault()</code>?</td><td>Without it the browser does a full page reload, discarding React state and the request you just started. (4.4)</td></tr>
     </tbody>
   </table>
 
-  <h3>6.2 Explain This Project</h3>
+  <h3>5.2 Hooks</h3>
   <p class="note">
-    "I built a small Next.js App Router learning project. The home page links to focused examples
-    for components, props, fragments, JSX syntax, conditional rendering, lists, events, and common
-    hooks. Shared components keep repeated UI consistent, and each route demonstrates one concept
-    with runnable code."
+    The last three rows cover hooks chapter 3 deliberately does not teach. Knowing what they are for
+    is enough to answer honestly - &quot;I have not needed one yet, and here is when I would&quot;
+    is a better answer than a memorised definition you cannot back up.
   </p>
-
-  <h2>Chapter 7 - Build Order</h2>
-
-  <h3>7.1 Step 1 - Create the App</h3>
-  <ol>
-    <li>Create <code>demo-project</code>.</li>
-    <li>Run <code>npm init -y</code>.</li>
-    <li>Install <code>next</code>, <code>react</code>, and <code>react-dom</code>.</li>
-    <li>Add <code>package.json</code>, <code>next.config.js</code>, and <code>jsconfig.json</code>.</li>
-  </ol>
-
-  <h3>7.2 Step 2 - Prove the Minimal App Runs</h3>
-  <ol>
-    <li>Create <code>app/layout.jsx</code>.</li>
-    <li>Create <code>app/globals.css</code>.</li>
-    <li>Create <code>app/page.jsx</code> with <code>Welcome to NextJS</code>.</li>
-    <li>Run <code>npm run dev</code> and confirm the welcome page appears.</li>
-  </ol>
-
-  <h3>7.3 Step 3 - Replace the Welcome Page with Lesson Navigation</h3>
-  <ol>
-    <li>Create <code>components/PageHeader.jsx</code>.</li>
-    <li>Update <code>app/page.jsx</code> with links to each lesson route.</li>
-    <li>Use the shared lesson styles already added to <code>app/globals.css</code>.</li>
-  </ol>
-
-  <h3>7.4 Step 4 - Add JSX and Events Lessons</h3>
-  <ol>
-    <li>Create <code>WelcomeCard</code> and <code>ProfileBadge</code>.</li>
-    <li>Add pages for components, props, fragments, JSX syntax, conditional rendering, lists, and events.</li>
-    <li>Run the app and click each route from the home page.</li>
-  </ol>
-
-  <h3>7.5 Step 5 - Add Hooks Lessons</h3>
-  <ol>
-    <li>Add one route per hook under <code>app/hooks/</code>.</li>
-    <li>Use <code>'use client'</code> on interactive hook examples.</li>
-    <li>Test router navigation and dynamic params separately.</li>
-  </ol>
-
-  <h3>7.6 Step 6 - Keep the Project Honest</h3>
-  <p>
-    When a lesson page changes, update the actual <code>demo-project</code> file first. The ebook
-    snippets should point to that file, so students see the same code they are asked to build.
-  </p>
-
-  <h2>Chapter 8 - Verification Checklist</h2>
-
-  <h3>8.1 Run Checks</h3>
-  <pre><code>cd demo-project
-npm run build
-npm run dev</code></pre>
-
-  <h3>8.2 Manual Route Check</h3>
-  <ol>
-    <li>Open <code>http://localhost:3000</code>.</li>
-    <li>Click every lesson link on the home page.</li>
-    <li>Use every button, input, and route link in the examples.</li>
-    <li>Confirm there are no console errors.</li>
-  </ol>
-
-  <h3>8.3 Final Student Checklist</h3>
   <table>
     <thead>
-      <tr><th>Can you explain?</th><th>Where to look</th></tr>
+      <tr><th>Question</th><th>Answer</th></tr>
     </thead>
     <tbody>
-      <tr><td>How a route is created</td><td><code>app/**/page.jsx</code></td></tr>
-      <tr><td>How a component is created</td><td><code>components/WelcomeCard.jsx</code></td></tr>
-      <tr><td>How props work</td><td><code>components/ProfileBadge.jsx</code></td></tr>
-      <tr><td>How state changes UI</td><td><code>app/hooks/use-state/page.jsx</code></td></tr>
-      <tr><td>How effects run</td><td><code>app/hooks/use-effect/page.jsx</code></td></tr>
-      <tr><td>How dynamic params work</td><td><code>app/hooks/use-params/[id]/page.jsx</code></td></tr>
-      <tr><td>How context shares values</td><td><code>app/hooks/use-context/ThemeContext.jsx</code></td></tr>
-      <tr><td>How reducer actions update state</td><td><code>app/hooks/use-reducer/page.jsx</code></td></tr>
+      <tr><td>What are the rules of hooks?</td><td>Call them only at the top level of a component or custom hook - never in a loop, condition, or nested function. React tracks hooks by call order, so a conditional hook shifts every later hook by one.</td></tr>
+      <tr><td>Why does state need a setter instead of assignment?</td><td>Assigning to a variable changes nothing React can see. Calling the setter is what schedules a re-render.</td></tr>
+      <tr><td>Why <code>setCount(c =&gt; c + 1)</code> rather than <code>setCount(count + 1)</code>?</td><td>The updater form reads the latest value. The direct form captures the value from the render it was written in, so two updates in one tick lose one.</td></tr>
+      <tr><td>What does the dependency array do?</td><td>No array - the effect runs after every render. <code>[]</code> - once, after the first render. <code>[x]</code> - whenever <code>x</code> changes. (4.2, 4.10)</td></tr>
+      <tr><td>What happens if you fetch in an effect with no array?</td><td>The response sets state, the state change re-renders, the render re-runs the effect, and it fetches forever. (4.1)</td></tr>
+      <tr><td>When do you need a cleanup function?</td><td>Timers, subscriptions, listeners, and in-flight requests - anything that would keep running or call <code>setState</code> after the component is gone.</td></tr>
+      <tr><td><code>useRef</code> vs <code>useState</code>?</td><td>Both survive re-renders; only state triggers one. Use a ref for DOM access or a value you need to remember but not display.</td></tr>
+      <tr><td>When is <code>useContext</code> the right tool?</td><td>When many components at different depths need the same value and threading props through every level has become the bigger problem.</td></tr>
+      <tr><td><code>useReducer</code> over <code>useState</code>?</td><td>When updates arrive as named actions and several fields change together, keeping the transitions in one pure function is easier to follow than scattered setters.</td></tr>
+      <tr><td>What do <code>useMemo</code> and <code>useCallback</code> actually do?</td><td>They cache a value and a function reference between renders. They are optimisations, not correctness tools - reach for them when a computation is genuinely expensive or a memoised child depends on a stable reference.</td></tr>
     </tbody>
   </table>
+
+  <h3>5.3 Next.js and the App Router</h3>
+  <table>
+    <thead>
+      <tr><th>Question</th><th>Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>How is a route created?</td><td>A folder under <code>app/</code> containing a <code>page.jsx</code>. The folder path is the URL.</td></tr>
+      <tr><td>What is a dynamic route?</td><td>A folder named <code>[id]</code>. Its value is read with <code>useParams()</code> - and it is always a string, so <code>===</code> against a numeric id fails. (4.11)</td></tr>
+      <tr><td>What does <code>&#39;use client&#39;</code> do?</td><td>Marks the file as a Client Component so hooks, event handlers and browser APIs can run. Without it the file is a Server Component. (4.1)</td></tr>
+      <tr><td>Server Component vs Client Component?</td><td>Server Components render on the server and ship HTML - no state, no effects, no handlers, no browser APIs. Client Components run in the browser and can do all of it. Server is the default.</td></tr>
+      <tr><td>Why is the default Server?</td><td>Less JavaScript reaches the browser. You opt into client-side code only where interactivity actually needs it.</td></tr>
+      <tr><td><code>&lt;Link&gt;</code> vs <code>router.push()</code>?</td><td><code>&lt;Link&gt;</code> for navigation the user chooses, so it renders a real anchor. <code>router.push()</code> for navigation that is the result of something happening, like a successful login. (4.6, 4.7)</td></tr>
+      <tr><td>Where does <code>useRouter</code> come from?</td><td><code>next/navigation</code> in the App Router. <code>next/router</code> is the Pages Router import and throws at runtime here.</td></tr>
+      <tr><td>What does the <code>NEXT_PUBLIC_</code> prefix mean?</td><td>The variable is exposed to the browser bundle. Without it the value is server-only and reads as <code>undefined</code> in a Client Component. Never prefix a secret. (4.3)</td></tr>
+      <tr><td>What is a hydration mismatch?</td><td>The server-rendered HTML differs from the browser&#39;s first render. Reading <code>localStorage</code> or the current time during render causes it. Read those inside <code>useEffect</code>. (4.7)</td></tr>
+      <tr><td>What is a layout for?</td><td>Shared UI that wraps a route and its children and does not remount on navigation between them.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.4 Working with APIs</h3>
+  <table>
+    <thead>
+      <tr><th>Question</th><th>Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Does <code>fetch</code> throw on a 404?</td><td>No - and this is the most common mistake. It rejects only when the request never completed. A 404 resolves with <code>res.ok === false</code>, so you must check and throw yourself. (4.2)</td></tr>
+      <tr><td>Why put <code>setLoading(false)</code> in <code>finally</code>?</td><td>It must run whether the request succeeded or failed. In the <code>try</code> alone, a failure leaves the spinner on forever. (4.2)</td></tr>
+      <tr><td>What three states does a request have?</td><td>Loading, error, and data. Rendering only the third is what makes a list flash empty on load. (4.2)</td></tr>
+      <tr><td>What does a POST need that a GET does not?</td><td><code>method</code>, a <code>Content-Type: application/json</code> header, and a <code>JSON.stringify</code>-ed body. Miss the header and Express leaves <code>req.body</code> empty. (4.4)</td></tr>
+      <tr><td>fetch vs axios?</td><td>axios parses JSON for you, rejects on non-2xx, encodes query params from an object, and supports interceptors. <code>fetch</code> is built in and needs no dependency. (4.9)</td></tr>
+      <tr><td>What is an interceptor?</td><td>A function that runs on every request or response, so a cross-cutting rule - attach the token, handle a 401 - is written once rather than at every call site. (4.9)</td></tr>
+      <tr><td>Why a <code>services/</code> layer?</td><td>Components stop knowing URLs. Moving an endpoint becomes a one-line change in one file instead of a search across the codebase. (4.9)</td></tr>
+      <tr><td>What is CORS?</td><td>Browsers block requests to a different origin unless the server opts in with the right headers. It is enforced by the browser, not the server, which is why the same request works from a REST client.</td></tr>
+      <tr><td>Why reset the page number when the search term changes?</td><td>Otherwise a user on page 3 searches for something with two matches and lands on an empty page. (4.10)</td></tr>
+      <tr><td>Why refetch after a delete?</td><td>The server is the source of truth and the local array is now stale. The alternative, removing the row locally, is instant but wrong if the delete actually failed. (4.13)</td></tr>
+      <tr><td>Client-side or server-side pagination?</td><td>Server-side here - the server returns one page plus a total count, so the browser never holds the whole table. Client-side only suits small, fully-loaded lists. (4.10)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.5 Authentication and Authorization</h3>
+  <table>
+    <thead>
+      <tr><th>Question</th><th>Answer</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Authentication vs authorization?</td><td>Authentication is who you are - login. Authorization is what you may do - the admin check. The two middlewares in the backend are exactly this split.</td></tr>
+      <tr><td>401 vs 403?</td><td>401 - I do not know who you are; the token is missing or expired. 403 - I know who you are and you still may not do this. (4.8)</td></tr>
+      <tr><td>What is a JWT?</td><td>A signed string issued at login. Sending it back identifies you without the server storing a session. Signed, not encrypted - readable by anyone, so it must hold nothing secret. (4.6)</td></tr>
+      <tr><td>Why localStorage rather than <code>useState</code> for the token?</td><td>State dies on refresh, which would log the user out on every F5. (4.6)</td></tr>
+      <tr><td>What are the risks of localStorage?</td><td>Any JavaScript on the page can read it, so an XSS bug leaks the token. An httpOnly cookie is not readable by JavaScript but brings CSRF concerns of its own. Neither is free.</td></tr>
+      <tr><td>Is hiding an admin button enough?</td><td>No. It is a convenience. Anyone can call the endpoint directly from DevTools - the server&#39;s middleware is the real boundary. (4.7)</td></tr>
+      <tr><td>Then why validate or guard on the client at all?</td><td>Speed and clarity for the honest user. It is never the thing standing between an attacker and your data. (4.5)</td></tr>
+      <tr><td>How does logout work with a stateless token?</td><td>There is nothing to tell the server. Logging out is deleting the token locally. Real revocation needs short expiry plus a refresh token, or a server-side denylist.</td></tr>
+      <tr><td>Where should an expired token be handled?</td><td>Once, centrally - the axios response interceptor clears storage on any 401 instead of every component checking. (4.9)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.6 Explain This Project</h3>
+  <p class="note">
+    &quot;I built a Next.js App Router learning project in two halves. The first is a set of focused
+    lessons - components, props, JSX, conditional rendering, lists, events, and the common hooks -
+    where each route demonstrates one concept and the code panel reads the real source off disk, so
+    the book and the running app can never drift. The second half is a working frontend against an
+    Express + MySQL API with JWT auth and two roles: registration, login with a role-based redirect,
+    an authenticated user list with search and pagination, and view, update and delete for admins.
+    It starts with plain <code>fetch</code> so the raw HTTP is visible, then moves to an axios client
+    with interceptors once the repetition has made the case for it.&quot;
+  </p>
+  <p>
+    Two follow-ups worth having ready. <strong>What was the hardest part?</strong> - a concrete
+    answer beats a modest one: the hydration mismatch from reading <code>localStorage</code> during
+    render, and why moving it into <code>useEffect</code> fixes it. <strong>What would you do
+    next?</strong> - route protection in middleware rather than per-page, a refresh-token flow, and
+    replacing the hand-rolled loading and error state with a data-fetching library.
+  </p>
+
 </body>
 </html>

@@ -18,9 +18,13 @@ export default function JsxSyntaxPage() {
         {isAdmin && <span className="badge">Admin</span>}
 
         {/* htmlFor, not for */}
-        <label htmlFor="email">Email</label>
-        {/* every tag must self-close */}
-        <input id="email" type="email" placeholder="you@example.com" />
+        {isAdmin && 
+          <>
+            <label htmlFor="email">Email</label>
+            {/* every tag must self-close */}
+            <input id="email" type="email" placeholder="you@example.com" />
+          </>
+        }
 
         {/* this is a JSX comment — HTML's <!-- --> does not work in JSX */}
       </div>

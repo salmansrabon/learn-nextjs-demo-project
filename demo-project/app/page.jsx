@@ -20,10 +20,6 @@ const hookLinks = [
   ['/hooks/use-router', '3. useRouter'],
   ['/hooks/use-params', '4. useParams'],
   ['/hooks/use-ref', '5. useRef'],
-  ['/hooks/use-callback', '6. useCallback'],
-  ['/hooks/use-memo', '7. useMemo'],
-  ['/hooks/use-context', '8. useContext'],
-  ['/hooks/use-reducer', '9. useReducer'],
 ];
 
 export default function HomePage() {
